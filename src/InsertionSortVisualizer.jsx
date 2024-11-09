@@ -28,10 +28,17 @@ function InsertionSortVisualizer() {
     cancelAnimationFrame(animationFrameId.current);
   };
 
-  // Reset the array and sorting state
-  const reset = () => {
-    setIsSorting(false);
-    initializeArray();
+  // Shuffle the array and render it
+  const shuffleArray = () => {
+    const shuffledArr = [...arr];
+    for (let i = shuffledArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; // Swap elements
+    }
+    setArr(shuffledArr);
+    setI(1);
+    setJ(0);
+    drawArray(shuffledArr);
   };
 
   // Handle array size change
@@ -84,7 +91,11 @@ function InsertionSortVisualizer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     array.forEach((value, index) => {
-      ctx.fillStyle = 'teal';
+      if (index === i || index === j) {
+        ctx.fillStyle = 'red'; // Highlight the elements being compared/sorted
+      } else {
+        ctx.fillStyle = 'teal';
+      }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
@@ -110,7 +121,7 @@ function InsertionSortVisualizer() {
       <div style={{ marginBottom: '10px' }}>
         <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
         <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-        <button onClick={reset}>Reset</button>
+        <button onClick={shuffleArray}>Shuffle</button>
       </div>
 
       <canvas ref={canvasRef} width={500} height={300}></canvas>

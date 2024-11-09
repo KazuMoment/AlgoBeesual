@@ -5,6 +5,7 @@ function BubbleSortVisualizer() {
   const [i, setI] = useState(0);
   const [j, setJ] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
+  const [isSorted, setIsSorted] = useState(false); // Track sorting completion
   const [arraySize, setArraySize] = useState(15);
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
@@ -15,11 +16,13 @@ function BubbleSortVisualizer() {
     setArr(newArr);
     setI(0);
     setJ(0);
+    setIsSorted(false); // Reset sorting completion status
   };
 
   // Start sorting
   const startSorting = () => {
     setIsSorting(true);
+    setIsSorted(false); // Ensure sorting isn't marked as complete when we start
   };
 
   // Stop sorting
@@ -28,10 +31,18 @@ function BubbleSortVisualizer() {
     cancelAnimationFrame(animationFrameId.current);
   };
 
-  // Reset the array and sorting state
-  const reset = () => {
-    setIsSorting(false);
-    initializeArray();
+  // Shuffle the array
+  const shuffleArray = () => {
+    const shuffledArr = [...arr];
+    for (let i = shuffledArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; // Swap elements
+    }
+    setArr(shuffledArr);
+    setI(0);
+    setJ(0);
+    setIsSorted(false); // Reset sorting completion status
+    drawArray(shuffledArr);
   };
 
   // Handle array size change
@@ -64,6 +75,8 @@ function BubbleSortVisualizer() {
           setI(i + 1);
         }
       } else {
+        setIsSorting(false); // Sorting is done
+        setIsSorted(true); // Mark sorting as complete
         cancelAnimationFrame(animationFrameId.current); // Stop when sorted
       }
 
@@ -76,14 +89,19 @@ function BubbleSortVisualizer() {
     return () => cancelAnimationFrame(animationFrameId.current);
   }, [arr, i, j, isSorting]);
 
-  // Draw array on the canvas
+  // Draw array on the canvas with red for elements being compared/swapped
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     array.forEach((value, index) => {
-      ctx.fillStyle = 'teal';
+      // Highlight the elements at index j and j+1 (elements being compared or swapped) only if sorting is in progress
+      if (isSorting && (index === j || index === j + 1)) {
+        ctx.fillStyle = 'red'; // Color for elements being compared
+      } else {
+        ctx.fillStyle = 'teal'; // Default color for other elements
+      }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
@@ -107,9 +125,9 @@ function BubbleSortVisualizer() {
       </div>
 
       <div style={{ marginBottom: '10px' }}>
-        <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
+        <button onClick={startSorting} disabled={isSorting || isSorted}>Start Sorting</button>
         <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-        <button onClick={reset}>Reset</button>
+        <button onClick={shuffleArray}>Shuffle</button>
       </div>
 
       <canvas ref={canvasRef} width={500} height={300}></canvas>

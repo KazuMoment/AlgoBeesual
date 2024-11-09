@@ -3,8 +3,8 @@ import React, { useState, useEffect, useRef } from 'react';
 function SelectionSortVisualizer() {
   const [arr, setArr] = useState([]);
   const [i, setI] = useState(0);
-  const [j, setJ] = useState(0);
-  const [minIdx, setMinIdx] = useState(null);
+  const [j, setJ] = useState(1);  // Start j at i + 1 in each iteration
+  const [minIdx, setMinIdx] = useState(0);  // Set minIdx to i initially
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
   const canvasRef = useRef(null);
@@ -14,8 +14,21 @@ function SelectionSortVisualizer() {
     const newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setI(0);
-    setJ(0);
-    setMinIdx(null);
+    setJ(1);
+    setMinIdx(0);
+  };
+
+  const shuffleArray = () => {
+    const shuffledArr = [...arr];
+    for (let i = shuffledArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
+    }
+    setArr(shuffledArr);
+    setI(0);
+    setJ(1);
+    setMinIdx(0);
+    drawArray(shuffledArr);
   };
 
   const startSorting = () => {
@@ -35,19 +48,22 @@ function SelectionSortVisualizer() {
 
       if (i < newArr.length - 1) {
         if (j < newArr.length) {
-          if (newArr[j] < newArr[minIdx] || minIdx === null) {
+          // Find the minimum element in unsorted array
+          if (newArr[j] < newArr[minIdx]) {
             setMinIdx(j);
           }
-          setJ(j + 1);
+          setJ(j + 1);  // Move to the next index
         } else {
+          // Swap the found minimum element with the first element
           [newArr[i], newArr[minIdx]] = [newArr[minIdx], newArr[i]];
           setArr(newArr);
-          setI(i + 1);
-          setJ(i + 2);
-          setMinIdx(null);
+          setI(i + 1);  // Move to the next position in sorted portion
+          setJ(i + 2);  // Set j to i + 2 for the next pass
+          setMinIdx(i + 1);  // Reset minIdx for the next pass
         }
       } else {
         cancelAnimationFrame(animationFrameId.current);
+        setIsSorting(false);  // Stop the sorting when finished
       }
 
       drawArray(newArr);
@@ -106,7 +122,7 @@ function SelectionSortVisualizer() {
         <button onClick={stopSorting} disabled={!isSorting}>
           Stop Sorting
         </button>
-        <button onClick={initializeArray}>Restart</button>
+        <button onClick={shuffleArray}>Shuffle</button> {/* Shuffle button */}
       </div>
     </div>
   );

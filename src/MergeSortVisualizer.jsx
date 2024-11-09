@@ -32,21 +32,23 @@ function MergeSortVisualizer() {
     cancelAnimationFrame(animationFrameId.current);
   };
 
-  // Reset the array and sorting state
-  const reset = () => {
-    setIsSorting(false);
-    initializeArray();
+  // Shuffle the array and render it
+  const shuffleArray = () => {
+    const shuffledArr = [...arr];
+    for (let i = shuffledArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; // Swap elements
+    }
+    setArr(shuffledArr);
+    setStep(0);
+    setAnimations([]);
+    drawArray(shuffledArr);
   };
 
   // Handle array size change
   const handleArraySizeChange = (event) => {
     setArraySize(Number(event.target.value));
-  };
-
-  // Handle array size submit
-  const handleArraySizeSubmit = (event) => {
-    event.preventDefault();
-    initializeArray();
+    initializeArray();  // Call initializeArray here to reflect changes immediately
   };
 
   // Merge Sort function
@@ -70,7 +72,13 @@ function MergeSortVisualizer() {
     let rightIndex = 0;
 
     while (leftIndex < left.length && rightIndex < right.length) {
-      animations.push([leftIndex, rightIndex]); // Add animation for the indices being compared
+      // Add the current elements being compared to the animations
+      animations.push({
+        leftIdx: leftIndex,
+        rightIdx: rightIndex,
+        result: [...result, left[leftIndex], right[rightIndex]]
+      });
+
       if (left[leftIndex] < right[rightIndex]) {
         result.push(left[leftIndex]);
         leftIndex++;
@@ -80,11 +88,14 @@ function MergeSortVisualizer() {
       }
     }
 
-    // Concatenate remaining elements
+    // Concatenate remaining elements and update animations
     result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    animations.push({
+      leftIdx: -1, // No more elements to compare
+      rightIdx: -1, // No more elements to compare
+      result: [...result]
+    });
 
-    // Push the result array into animations for visualization
-    animations.push(result);
     return result;
   };
 
@@ -94,44 +105,35 @@ function MergeSortVisualizer() {
 
     const animate = () => {
       if (step < animations.length) {
-        const newArr = [...arr];
-        const animationStep = animations[step];
-
-        if (Array.isArray(animationStep)) {
-          if (animationStep.length === 2) {
-            // Comparison step (highlight the indices being compared)
-            const [leftIdx, rightIdx] = animationStep;
-            drawArray(newArr, leftIdx, rightIdx);
-          } else {
-            // Merge step (update the entire array)
-            setArr(animationStep);
-          }
-        }
-
-        setStep(step + 1);
+        const { leftIdx, rightIdx, result } = animations[step];
+        setArr(result); // Update array for each step
+        drawArray(result, leftIdx, rightIdx); // Draw each step on the canvas with highlights
+        setStep((prevStep) => prevStep + 1); // Move to the next step
       } else {
         cancelAnimationFrame(animationFrameId.current); // Stop when fully sorted
+        setIsSorting(false);
       }
 
       animationFrameId.current = requestAnimationFrame(animate);
     };
 
-    animate();
+    animationFrameId.current = requestAnimationFrame(animate);
 
     return () => cancelAnimationFrame(animationFrameId.current);
-  }, [arr, animations, isSorting, step]);
+  }, [animations, isSorting, step]);
 
-  // Draw array on the canvas
+  // Draw array on the canvas with red for elements being compared/merged
   const drawArray = (array, leftIdx = null, rightIdx = null) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     array.forEach((value, index) => {
+      // Highlight elements being compared (either left or right index)
       if (index === leftIdx || index === rightIdx) {
-        ctx.fillStyle = 'red'; // Highlighting compared elements
+        ctx.fillStyle = 'red'; // Color for elements being compared or merged
       } else {
-        ctx.fillStyle = 'teal';
+        ctx.fillStyle = 'teal'; // Default color for other elements
       }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
@@ -140,7 +142,7 @@ function MergeSortVisualizer() {
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <form onSubmit={handleArraySizeSubmit}>
+        <form onSubmit={(e) => e.preventDefault()}>
           <input
             type="number"
             value={arraySize}
@@ -149,7 +151,7 @@ function MergeSortVisualizer() {
             max="50"
             style={{ padding: '5px' }}
           />
-          <button type="submit" style={{ padding: '5px', marginLeft: '5px' }}>
+          <button type="button" onClick={initializeArray} style={{ padding: '5px', marginLeft: '5px' }}>
             Set Array Size
           </button>
         </form>
@@ -158,7 +160,7 @@ function MergeSortVisualizer() {
       <div style={{ marginBottom: '10px' }}>
         <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
         <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-        <button onClick={reset}>Reset</button>
+        <button onClick={shuffleArray}>Shuffle</button>
       </div>
 
       <canvas ref={canvasRef} width={500} height={300}></canvas>
