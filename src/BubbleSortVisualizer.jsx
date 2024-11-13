@@ -7,12 +7,13 @@ function BubbleSortVisualizer() {
   const [isSorting, setIsSorting] = useState(false);
   const [isSorted, setIsSorted] = useState(false); // Track sorting completion
   const [arraySize, setArraySize] = useState(15);
+  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
   const canvasRef = useRef(null);
-  const animationFrameId = useRef(null);
+  const timeoutRef = useRef(null);
 
   // Initialize array with random values
-  const initializeArray = () => {
-    const newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (size = arraySize) => {
+    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setI(0);
     setJ(0);
@@ -28,7 +29,7 @@ function BubbleSortVisualizer() {
   // Stop sorting
   const stopSorting = () => {
     setIsSorting(false);
-    cancelAnimationFrame(animationFrameId.current);
+    clearTimeout(timeoutRef.current);
   };
 
   // Shuffle the array
@@ -45,18 +46,14 @@ function BubbleSortVisualizer() {
     drawArray(shuffledArr);
   };
 
-  // Handle array size change
+  // Handle array size change with slider
   const handleArraySizeChange = (event) => {
-    setArraySize(Number(event.target.value));
+    const newSize = Number(event.target.value);
+    setArraySize(newSize);
+    initializeArray(newSize); // Reinitialize array with new size
   };
 
-  // Handle array size submit
-  const handleArraySizeSubmit = (event) => {
-    event.preventDefault();
-    initializeArray();
-  };
-
-  // Bubble Sort step-by-step
+  // Bubble Sort step-by-step with delay
   useEffect(() => {
     if (!isSorting) return;
 
@@ -77,17 +74,17 @@ function BubbleSortVisualizer() {
       } else {
         setIsSorting(false); // Sorting is done
         setIsSorted(true); // Mark sorting as complete
-        cancelAnimationFrame(animationFrameId.current); // Stop when sorted
+        clearTimeout(timeoutRef.current); // Stop when sorted
       }
 
       drawArray(newArr);
-      animationFrameId.current = requestAnimationFrame(bubbleSortStep);
+      timeoutRef.current = setTimeout(bubbleSortStep, sortDelay); // Set delay between steps
     };
 
-    animationFrameId.current = requestAnimationFrame(bubbleSortStep);
+    timeoutRef.current = setTimeout(bubbleSortStep, sortDelay);
 
-    return () => cancelAnimationFrame(animationFrameId.current);
-  }, [arr, i, j, isSorting]);
+    return () => clearTimeout(timeoutRef.current);
+  }, [arr, i, j, isSorting, sortDelay]);
 
   // Draw array on the canvas with red for elements being compared/swapped
   const drawArray = (array) => {
@@ -109,19 +106,32 @@ function BubbleSortVisualizer() {
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <form onSubmit={handleArraySizeSubmit}>
+        <label>
+          Array Size: {arraySize}
           <input
-            type="number"
+            type="range"
             value={arraySize}
             onChange={handleArraySizeChange}
             min="5"
             max="50"
-            style={{ padding: '5px' }}
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
-          <button type="submit" style={{ padding: '5px', marginLeft: '5px' }}>
-            Set Array Size
-          </button>
-        </form>
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <input
+            type="range"
+            value={sortDelay}
+            onChange={(e) => setSortDelay(Number(e.target.value))}
+            min="10"
+            max="1000"
+            step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
       </div>
 
       <div style={{ marginBottom: '10px' }}>

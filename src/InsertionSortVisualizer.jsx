@@ -6,12 +6,13 @@ function InsertionSortVisualizer() {
   const [j, setJ] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
+  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
   const canvasRef = useRef(null);
-  const animationFrameId = useRef(null);
+  const timeoutRef = useRef(null);
 
   // Initialize array with random values
-  const initializeArray = () => {
-    const newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (size = arraySize) => {
+    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setI(1);
     setJ(0);
@@ -25,7 +26,7 @@ function InsertionSortVisualizer() {
   // Stop sorting
   const stopSorting = () => {
     setIsSorting(false);
-    cancelAnimationFrame(animationFrameId.current);
+    clearTimeout(timeoutRef.current);
   };
 
   // Shuffle the array and render it
@@ -43,16 +44,12 @@ function InsertionSortVisualizer() {
 
   // Handle array size change
   const handleArraySizeChange = (event) => {
-    setArraySize(Number(event.target.value));
+    const newSize = Number(event.target.value);
+    setArraySize(newSize);
+    initializeArray(newSize); // Reinitialize array with new size
   };
 
-  // Handle array size submit
-  const handleArraySizeSubmit = (event) => {
-    event.preventDefault();
-    initializeArray();
-  };
-
-  // Insertion Sort step-by-step
+  // Insertion Sort step-by-step with delay
   useEffect(() => {
     if (!isSorting) return;
 
@@ -72,17 +69,17 @@ function InsertionSortVisualizer() {
           setJ(0);
         }
       } else {
-        cancelAnimationFrame(animationFrameId.current); // Stop when sorted
+        clearTimeout(timeoutRef.current); // Stop when sorted
       }
 
       drawArray(newArr);
-      animationFrameId.current = requestAnimationFrame(insertionSortStep);
+      timeoutRef.current = setTimeout(insertionSortStep, sortDelay); // Set delay between steps
     };
 
-    animationFrameId.current = requestAnimationFrame(insertionSortStep);
+    timeoutRef.current = setTimeout(insertionSortStep, sortDelay);
 
-    return () => cancelAnimationFrame(animationFrameId.current);
-  }, [arr, i, j, isSorting]);
+    return () => clearTimeout(timeoutRef.current);
+  }, [arr, i, j, isSorting, sortDelay]);
 
   // Draw array on the canvas
   const drawArray = (array) => {
@@ -103,19 +100,32 @@ function InsertionSortVisualizer() {
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <form onSubmit={handleArraySizeSubmit}>
+        <label>
+          Array Size: {arraySize}
           <input
-            type="number"
+            type="range"
             value={arraySize}
             onChange={handleArraySizeChange}
             min="5"
             max="50"
-            style={{ padding: '5px' }}
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
-          <button type="submit" style={{ padding: '5px', marginLeft: '5px' }}>
-            Set Array Size
-          </button>
-        </form>
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <input
+            type="range"
+            value={sortDelay}
+            onChange={(e) => setSortDelay(Number(e.target.value))}
+            min="10"
+            max="1000"
+            step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
       </div>
 
       <div style={{ marginBottom: '10px' }}>

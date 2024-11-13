@@ -3,15 +3,16 @@ import React, { useState, useEffect, useRef } from 'react';
 function SelectionSortVisualizer() {
   const [arr, setArr] = useState([]);
   const [i, setI] = useState(0);
-  const [j, setJ] = useState(1);  // Start j at i + 1 in each iteration
-  const [minIdx, setMinIdx] = useState(0);  // Set minIdx to i initially
+  const [j, setJ] = useState(1);
+  const [minIdx, setMinIdx] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
+  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
 
-  const initializeArray = () => {
-    const newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (size = arraySize) => {
+    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setI(0);
     setJ(1);
@@ -48,32 +49,30 @@ function SelectionSortVisualizer() {
 
       if (i < newArr.length - 1) {
         if (j < newArr.length) {
-          // Find the minimum element in unsorted array
           if (newArr[j] < newArr[minIdx]) {
             setMinIdx(j);
           }
-          setJ(j + 1);  // Move to the next index
+          setJ(j + 1);
         } else {
-          // Swap the found minimum element with the first element
           [newArr[i], newArr[minIdx]] = [newArr[minIdx], newArr[i]];
           setArr(newArr);
-          setI(i + 1);  // Move to the next position in sorted portion
-          setJ(i + 2);  // Set j to i + 2 for the next pass
-          setMinIdx(i + 1);  // Reset minIdx for the next pass
+          setI(i + 1);
+          setJ(i + 2);
+          setMinIdx(i + 1);
         }
       } else {
         cancelAnimationFrame(animationFrameId.current);
-        setIsSorting(false);  // Stop the sorting when finished
+        setIsSorting(false);
       }
 
       drawArray(newArr);
-      animationFrameId.current = requestAnimationFrame(selectionSortStep);
+      animationFrameId.current = setTimeout(selectionSortStep, sortDelay); // Use setTimeout with sortDelay
     };
 
-    animationFrameId.current = requestAnimationFrame(selectionSortStep);
+    animationFrameId.current = setTimeout(selectionSortStep, sortDelay);
 
-    return () => cancelAnimationFrame(animationFrameId.current);
-  }, [arr, i, j, minIdx, isSorting]);
+    return () => clearTimeout(animationFrameId.current);
+  }, [arr, i, j, minIdx, isSorting, sortDelay]);
 
   const drawArray = (array) => {
     const canvas = canvasRef.current;
@@ -87,30 +86,40 @@ function SelectionSortVisualizer() {
   };
 
   const handleArraySizeChange = (event) => {
-    setArraySize(Number(event.target.value));
-  };
-
-  const handleArraySizeSubmit = (event) => {
-    event.preventDefault();
-    initializeArray();
+    const newSize = Number(event.target.value);
+    setArraySize(newSize);
+    initializeArray(newSize);
   };
 
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <form onSubmit={handleArraySizeSubmit}>
+        <label>
+          Array Size: {arraySize}
           <input
-            type="number"
+            type="range"
             value={arraySize}
             onChange={handleArraySizeChange}
             min="5"
             max="50"
-            style={{ padding: '5px' }}
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
-          <button type="submit" style={{ padding: '5px', marginLeft: '5px' }}>
-            Set Array Size
-          </button>
-        </form>
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <input
+            type="range"
+            value={sortDelay}
+            onChange={(e) => setSortDelay(Number(e.target.value))}
+            min="10"
+            max="1000"
+            step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
       </div>
 
       <canvas ref={canvasRef} width={arraySize * 40} height={200}></canvas>
@@ -122,7 +131,7 @@ function SelectionSortVisualizer() {
         <button onClick={stopSorting} disabled={!isSorting}>
           Stop Sorting
         </button>
-        <button onClick={shuffleArray}>Shuffle</button> {/* Shuffle button */}
+        <button onClick={shuffleArray}>Shuffle</button>
       </div>
     </div>
   );

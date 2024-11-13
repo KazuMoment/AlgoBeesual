@@ -4,14 +4,15 @@ function MergeSortVisualizer() {
   const [arr, setArr] = useState([]);
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
+  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
 
   // Initialize array with random values
-  const initializeArray = () => {
-    const newArr = Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (size = arraySize) => {
+    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setStep(0);
     setAnimations([]);
@@ -47,8 +48,9 @@ function MergeSortVisualizer() {
 
   // Handle array size change
   const handleArraySizeChange = (event) => {
-    setArraySize(Number(event.target.value));
-    initializeArray();  // Call initializeArray here to reflect changes immediately
+    const newSize = Number(event.target.value);
+    setArraySize(newSize);
+    initializeArray(newSize); // Reinitialize array with new size
   };
 
   // Merge Sort function
@@ -72,7 +74,6 @@ function MergeSortVisualizer() {
     let rightIndex = 0;
 
     while (leftIndex < left.length && rightIndex < right.length) {
-      // Add the current elements being compared to the animations
       animations.push({
         leftIdx: leftIndex,
         rightIdx: rightIndex,
@@ -88,11 +89,10 @@ function MergeSortVisualizer() {
       }
     }
 
-    // Concatenate remaining elements and update animations
     result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
     animations.push({
-      leftIdx: -1, // No more elements to compare
-      rightIdx: -1, // No more elements to compare
+      leftIdx: -1,
+      rightIdx: -1,
       result: [...result]
     });
 
@@ -114,13 +114,13 @@ function MergeSortVisualizer() {
         setIsSorting(false);
       }
 
-      animationFrameId.current = requestAnimationFrame(animate);
+      animationFrameId.current = setTimeout(animate, sortDelay); // Set delay between steps
     };
 
-    animationFrameId.current = requestAnimationFrame(animate);
+    animationFrameId.current = setTimeout(animate, sortDelay);
 
-    return () => cancelAnimationFrame(animationFrameId.current);
-  }, [animations, isSorting, step]);
+    return () => clearTimeout(animationFrameId.current);
+  }, [animations, isSorting, step, sortDelay]);
 
   // Draw array on the canvas with red for elements being compared/merged
   const drawArray = (array, leftIdx = null, rightIdx = null) => {
@@ -129,9 +129,8 @@ function MergeSortVisualizer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     array.forEach((value, index) => {
-      // Highlight elements being compared (either left or right index)
       if (index === leftIdx || index === rightIdx) {
-        ctx.fillStyle = 'red'; // Color for elements being compared or merged
+        ctx.fillStyle = 'red'; // Highlight elements being compared or merged
       } else {
         ctx.fillStyle = 'teal'; // Default color for other elements
       }
@@ -142,19 +141,32 @@ function MergeSortVisualizer() {
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <label>
+          Array Size: {arraySize}
           <input
-            type="number"
+            type="range"
             value={arraySize}
             onChange={handleArraySizeChange}
             min="5"
             max="50"
-            style={{ padding: '5px' }}
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
-          <button type="button" onClick={initializeArray} style={{ padding: '5px', marginLeft: '5px' }}>
-            Set Array Size
-          </button>
-        </form>
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <input
+            type="range"
+            value={sortDelay}
+            onChange={(e) => setSortDelay(Number(e.target.value))}
+            min="10"
+            max="1000"
+            step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
       </div>
 
       <div style={{ marginBottom: '10px' }}>
