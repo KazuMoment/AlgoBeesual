@@ -55,9 +55,8 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 ## Contributing
 
-- **Frontend Developer:** Justin Mae Nuñez
+- **Frontend Developer:** Angel Mae Bacsa
 - **Backend Developer:** Ron Gabriel Del Mundo
-- **Fullstack Developer:** Angel Mae Bacsa
 - **Project Manager/Fullstack Developer:** Karl Mathew Mojar
 
 ## Bibliography
