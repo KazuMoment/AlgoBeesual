@@ -4,56 +4,58 @@ function MergeSortVisualizer() {
   const [arr, setArr] = useState([]);
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
-  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
+  const [sortDelay, setSortDelay] = useState(100); 
+  const [autoStart, setAutoStart] = useState(true); 
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
 
-  // Initialize array with random values
+  
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setStep(0);
     setAnimations([]);
+    drawArray(newArr); 
   };
 
-  // Start sorting
+
   const startSorting = () => {
     setIsSorting(true);
     const newAnimations = [];
     mergeSort([...arr], newAnimations);
     setAnimations(newAnimations);
-    setStep(0); // Reset to the beginning of the animation
+    setStep(0); 
   };
 
-  // Stop sorting
+  
   const stopSorting = () => {
     setIsSorting(false);
     cancelAnimationFrame(animationFrameId.current);
   };
 
-  // Shuffle the array and render it
+  
   const shuffleArray = () => {
     const shuffledArr = [...arr];
     for (let i = shuffledArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; // Swap elements
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; 
     }
     setArr(shuffledArr);
     setStep(0);
     setAnimations([]);
-    drawArray(shuffledArr);
+    drawArray(shuffledArr); 
   };
 
-  // Handle array size change
+
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
-    initializeArray(newSize); // Reinitialize array with new size
+    initializeArray(newSize); 
   };
 
-  // Merge Sort function
+ 
   const mergeSort = (array, animations) => {
     if (array.length <= 1) return array;
 
@@ -67,7 +69,7 @@ function MergeSortVisualizer() {
     return merge(sortedLeft, sortedRight, animations);
   };
 
-  // Merge function to merge two sorted arrays
+  
   const merge = (left, right, animations) => {
     let result = [];
     let leftIndex = 0;
@@ -99,22 +101,22 @@ function MergeSortVisualizer() {
     return result;
   };
 
-  // Step through the animations for visualization
+  
   useEffect(() => {
     if (!isSorting || animations.length === 0) return;
 
     const animate = () => {
       if (step < animations.length) {
         const { leftIdx, rightIdx, result } = animations[step];
-        setArr(result); // Update array for each step
-        drawArray(result, leftIdx, rightIdx); // Draw each step on the canvas with highlights
-        setStep((prevStep) => prevStep + 1); // Move to the next step
+        setArr(result); 
+        drawArray(result, leftIdx, rightIdx); 
+        setStep((prevStep) => prevStep + 1); 
       } else {
-        cancelAnimationFrame(animationFrameId.current); // Stop when fully sorted
+        cancelAnimationFrame(animationFrameId.current); 
         setIsSorting(false);
       }
 
-      animationFrameId.current = setTimeout(animate, sortDelay); // Set delay between steps
+      animationFrameId.current = setTimeout(animate, sortDelay);
     };
 
     animationFrameId.current = setTimeout(animate, sortDelay);
@@ -122,7 +124,15 @@ function MergeSortVisualizer() {
     return () => clearTimeout(animationFrameId.current);
   }, [animations, isSorting, step, sortDelay]);
 
-  // Draw array on the canvas with red for elements being compared/merged
+  
+  useEffect(() => {
+    initializeArray(arraySize); 
+    if (autoStart) {
+      startSorting();
+    }
+  }, [autoStart, arraySize]);
+
+  
   const drawArray = (array, leftIdx = null, rightIdx = null) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -130,13 +140,18 @@ function MergeSortVisualizer() {
 
     array.forEach((value, index) => {
       if (index === leftIdx || index === rightIdx) {
-        ctx.fillStyle = 'red'; // Highlight elements being compared or merged
+        ctx.fillStyle = 'red'; 
       } else {
-        ctx.fillStyle = 'teal'; // Default color for other elements
+        ctx.fillStyle = 'teal'; 
       }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
+
+  useEffect(() => {
+    
+    drawArray(arr);
+  }, [arr]);
 
   return (
     <div>
@@ -164,6 +179,18 @@ function MergeSortVisualizer() {
             min="10"
             max="1000"
             step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
             style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>

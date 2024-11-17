@@ -1,59 +1,60 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-function BubbleSortVisualizer() {
+function BubbleSortVisualizer(){
   const [arr, setArr] = useState([]);
   const [i, setI] = useState(0);
   const [j, setJ] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
-  const [isSorted, setIsSorted] = useState(false); // Track sorting completion
+  const [isSorted, setIsSorted] = useState(false); 
   const [arraySize, setArraySize] = useState(15);
-  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
+  const [sortDelay, setSortDelay] = useState(100); 
+  const [autoStart, setAutoStart] = useState(true); 
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  // Initialize array with random values
+
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
     setI(0);
     setJ(0);
-    setIsSorted(false); // Reset sorting completion status
+    setIsSorted(false); 
+    drawArray(newArr); 
   };
 
-  // Start sorting
+  
   const startSorting = () => {
     setIsSorting(true);
-    setIsSorted(false); // Ensure sorting isn't marked as complete when we start
+    setIsSorted(false); 
   };
 
-  // Stop sorting
+  
   const stopSorting = () => {
     setIsSorting(false);
     clearTimeout(timeoutRef.current);
   };
 
-  // Shuffle the array
+  
   const shuffleArray = () => {
     const shuffledArr = [...arr];
     for (let i = shuffledArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; // Swap elements
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; 
     }
     setArr(shuffledArr);
     setI(0);
     setJ(0);
-    setIsSorted(false); // Reset sorting completion status
-    drawArray(shuffledArr);
+    setIsSorted(false); 
+    drawArray(shuffledArr); 
   };
 
-  // Handle array size change with slider
+ 
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
-    initializeArray(newSize); // Reinitialize array with new size
-  };
-
-  // Bubble Sort step-by-step with delay
+    initializeArray(newSize); 
+  }
+ 
   useEffect(() => {
     if (!isSorting) return;
 
@@ -63,7 +64,7 @@ function BubbleSortVisualizer() {
       if (i < newArr.length - 1) {
         if (j < newArr.length - 1 - i) {
           if (newArr[j] > newArr[j + 1]) {
-            [newArr[j], newArr[j + 1]] = [newArr[j + 1], newArr[j]]; // Swap
+            [newArr[j], newArr[j + 1]] = [newArr[j + 1], newArr[j]]; 
             setArr(newArr);
           }
           setJ(j + 1);
@@ -72,13 +73,13 @@ function BubbleSortVisualizer() {
           setI(i + 1);
         }
       } else {
-        setIsSorting(false); // Sorting is done
-        setIsSorted(true); // Mark sorting as complete
-        clearTimeout(timeoutRef.current); // Stop when sorted
+        setIsSorting(false); 
+        setIsSorted(true); 
+        clearTimeout(timeoutRef.current); 
       }
 
-      drawArray(newArr);
-      timeoutRef.current = setTimeout(bubbleSortStep, sortDelay); // Set delay between steps
+      drawArray(newArr); 
+      timeoutRef.current = setTimeout(bubbleSortStep, sortDelay); 
     };
 
     timeoutRef.current = setTimeout(bubbleSortStep, sortDelay);
@@ -86,22 +87,34 @@ function BubbleSortVisualizer() {
     return () => clearTimeout(timeoutRef.current);
   }, [arr, i, j, isSorting, sortDelay]);
 
-  // Draw array on the canvas with red for elements being compared/swapped
+ 
+  useEffect(() => {
+    initializeArray(arraySize); 
+    if (autoStart) {
+      startSorting();
+    }
+  }, [autoStart, arraySize]);
+
+  
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     array.forEach((value, index) => {
-      // Highlight the elements at index j and j+1 (elements being compared or swapped) only if sorting is in progress
+      
       if (isSorting && (index === j || index === j + 1)) {
-        ctx.fillStyle = 'red'; // Color for elements being compared
+        ctx.fillStyle = 'red'; 
       } else {
-        ctx.fillStyle = 'teal'; // Default color for other elements
+        ctx.fillStyle = 'teal'; 
       }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
+
+  useEffect(() => {
+    drawArray(arr);
+  }, [arr]);
 
   return (
     <div>
@@ -129,6 +142,18 @@ function BubbleSortVisualizer() {
             min="10"
             max="1000"
             step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
             style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>

@@ -7,7 +7,8 @@ function SelectionSortVisualizer() {
   const [minIdx, setMinIdx] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
   const [arraySize, setArraySize] = useState(15);
-  const [sortDelay, setSortDelay] = useState(100); // Sorting delay in milliseconds
+  const [sortDelay, setSortDelay] = useState(100); 
+  const [autoStart, setAutoStart] = useState(true); 
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
 
@@ -17,6 +18,7 @@ function SelectionSortVisualizer() {
     setI(0);
     setJ(1);
     setMinIdx(0);
+    drawArray(newArr); 
   };
 
   const shuffleArray = () => {
@@ -29,7 +31,7 @@ function SelectionSortVisualizer() {
     setI(0);
     setJ(1);
     setMinIdx(0);
-    drawArray(shuffledArr);
+    drawArray(shuffledArr); 
   };
 
   const startSorting = () => {
@@ -66,7 +68,7 @@ function SelectionSortVisualizer() {
       }
 
       drawArray(newArr);
-      animationFrameId.current = setTimeout(selectionSortStep, sortDelay); // Use setTimeout with sortDelay
+      animationFrameId.current = setTimeout(selectionSortStep, sortDelay); 
     };
 
     animationFrameId.current = setTimeout(selectionSortStep, sortDelay);
@@ -90,6 +92,18 @@ function SelectionSortVisualizer() {
     setArraySize(newSize);
     initializeArray(newSize);
   };
+
+ 
+  useEffect(() => {
+    initializeArray(arraySize); 
+    if (autoStart) {
+      startSorting();
+    }
+  }, [autoStart, arraySize]);
+
+  useEffect(() => {
+    drawArray(arr);
+  }, [arr]);
 
   return (
     <div>
@@ -117,6 +131,18 @@ function SelectionSortVisualizer() {
             min="10"
             max="1000"
             step="10"
+            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
+          />
+        </label>
+      </div>
+
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
             style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>
