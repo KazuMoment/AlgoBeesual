@@ -5,6 +5,7 @@ import BubbleSortVisualizer from './BubbleSortVisualizer';  // Import the Bubble
 import InsertionSortVisualizer from './InsertionSortVisualizer';
 import MergeSortVisualizer from './MergeSortVisualizer';
 import SelectionSortVisualizer from './SelectionSortVisualizer';
+import './App.css';
 
 function App() {
     const [open, setOpen] = useState(false);
@@ -63,6 +64,9 @@ function App() {
                         <ListItem button onClick={() => handleSelection("bubbleSort")}>
                             <ListItemText primary="Bubble Sort" />
                         </ListItem>
+                        <ListItem button onClick={() => handleSelection("quickSort")}>
+                            <ListItemText primary="Quick Sort" />
+                        </ListItem>
                         <ListItem button onClick={() => handleSelection("mergeSort")}>
                             <ListItemText primary="Merge Sort" />
                         </ListItem>
@@ -75,6 +79,30 @@ function App() {
                     </List>
                 </div>
             </Drawer>
+
+                        {/* Main Content */}
+                        <div style={{ marginTop: '80px', padding: '20px' }}>
+                {selectedAlgorithm === null && (
+                    <div className="main-content">
+                        <h1 className="main-header">Welcome to AlgoBeesual</h1>
+                        <p>Select an algorithm to visualize.</p>
+                    </div>
+                )}
+                {selectedAlgorithm === "bubbleSort" && (
+                    <div className="sorting-landing-page">
+                        <h1 className="sorting-header">Bubble Sort</h1>
+                        <div className="controls">
+                            <ShuffleIcon className="control-icon" />
+                            <PlayArrowIcon className="control-icon" />
+                            <VolumeUpIcon className="control-icon" />
+                        </div>
+                        <div className="sorting-animation-box">
+                            <p>Bubble Sort Animation</p>
+                        </div>
+                    </div>
+                )}
+            </div>
+
         </div>
     );
 }
