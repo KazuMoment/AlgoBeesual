@@ -1,11 +1,11 @@
 /* General Styles */
 body {
     margin: 0;
-    background: url('/honeycomb.png') repeat center center;
+    background: var(--background-image, url('assets/bg ab.svg')) repeat center center;
     background-size: cover;
-    font-family: 'Press Start 2P', sans-serif;
-    color: #5A3019;
-}
+    font-family: "Press Start 2P", sans-serif;
+    color: #5a3019;
+  }
 
 #root {
     display: flex;

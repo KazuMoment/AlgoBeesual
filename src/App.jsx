@@ -5,11 +5,13 @@ import BubbleSortVisualizer from './BubbleSortVisualizer';  // Import the Bubble
 import InsertionSortVisualizer from './InsertionSortVisualizer';
 import MergeSortVisualizer from './MergeSortVisualizer';
 import SelectionSortVisualizer from './SelectionSortVisualizer';
+import Home from './home';
 import './App.css';
+
 
 function App() {
     const [open, setOpen] = useState(false);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState(null);  // Track selected algorithm
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState('home');  // Set 'home' as the default
 
     const toggleDrawer = () => setOpen(!open);
 
@@ -35,12 +37,20 @@ function App() {
             </AppBar>
 
             {/* Main content area */}
-            <div style={{ marginTop: '80px', padding: '20px' }}>
-                {selectedAlgorithm === 'bubbleSort' && <BubbleSortVisualizer />}  {/* Render BubbleSortVisualizer when selected */}
+            <div        style={{
+                    marginTop: '80px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    minHeight: 'calc(100vh - 80px)', // Account for AppBar height
+                    padding: '20px',
+                }}>
+                {selectedAlgorithm === 'bubbleSort' && <BubbleSortVisualizer />}
                 {selectedAlgorithm === 'insertionSort' && <InsertionSortVisualizer />}
                 {selectedAlgorithm === 'mergeSort' && <MergeSortVisualizer />}
                 {selectedAlgorithm === 'selectionSort' && <SelectionSortVisualizer />}
-                {selectedAlgorithm === null && <Typography variant="h4">Welcome to AlgoBeesual! Select an algorithm to visualize.</Typography>}  {/* Default view */}
+                {selectedAlgorithm === 'home' && <Home />}  {/* Display Home component */}
             </div>
 
             {/* Drawer */}
@@ -79,29 +89,6 @@ function App() {
                     </List>
                 </div>
             </Drawer>
-
-                        {/* Main Content */}
-                        <div style={{ marginTop: '80px', padding: '20px' }}>
-                {selectedAlgorithm === null && (
-                    <div className="main-content">
-                        <h1 className="main-header">Welcome to AlgoBeesual</h1>
-                        <p>Select an algorithm to visualize.</p>
-                    </div>
-                )}
-                {selectedAlgorithm === "bubbleSort" && (
-                    <div className="sorting-landing-page">
-                        <h1 className="sorting-header">Bubble Sort</h1>
-                        <div className="controls">
-                            <ShuffleIcon className="control-icon" />
-                            <PlayArrowIcon className="control-icon" />
-                            <VolumeUpIcon className="control-icon" />
-                        </div>
-                        <div className="sorting-animation-box">
-                            <p>Bubble Sort Animation</p>
-                        </div>
-                    </div>
-                )}
-            </div>
 
         </div>
     );

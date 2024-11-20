@@ -1,0 +1,49 @@
+@font-face {
+    font-family: 'Supermercado';
+    src: url('/fonts/SupermercadoOne-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  .navbar {
+    background-color: #333;
+    padding: 10px 20px;
+  }
+  
+  .List{
+    margin-right: 20px;
+  }
+  
+  .supermercado{
+  font-family: Supermercado, Arial, sans-serif;
+  color: #FFB800;
+  }
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-logo {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-item {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 18px;
+  }
+  
+  .navbar-item:hover {
+    color: #f0a500;
+    cursor: pointer;
+  }
