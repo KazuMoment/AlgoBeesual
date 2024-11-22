@@ -1,0 +1,41 @@
+.controls {
+  position: absolute;
+  top: 75px; /* Increased top margin for spacing */
+  right: 20px;
+  background-color: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+  z-index: 10;
+}
+
+.controls label {
+  display: block;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.controls input[type="range"] {
+  width: 100%;
+}
+
+.controls input[type="checkbox"] {
+  margin-left: 5px;
+}
+
+.controls button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+canvas {
+  display: block;
+  margin: 50px auto;
+  background-color: #ffc107;
+  border-radius: 10px;
+}
+

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './SelectionSortVisualizer.css';
 
 function SelectionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -106,58 +107,59 @@ function SelectionSortVisualizer() {
   }, [arr]);
 
   return (
-    <div>
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Array Size: {arraySize}
-          <input
-            type="range"
-            value={arraySize}
-            onChange={handleArraySizeChange}
-            min="5"
-            max="50"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
+    <div className="visualizer-container">
+      <div className="controls">
+        <div className="control-item">
+          <label>
+            Array Size: {arraySize}
+            <input
+              type="range"
+              value={arraySize}
+              onChange={handleArraySizeChange}
+              min="5"
+              max="50"
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <label>
+            Sorting Speed (ms): {sortDelay}
+            <input
+              type="range"
+              value={sortDelay}
+              onChange={(e) => setSortDelay(Number(e.target.value))}
+              min="10"
+              max="1000"
+              step="10"
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <label>
+            Auto-Start Sorting:
+            <input
+              type="checkbox"
+              checked={autoStart}
+              onChange={(e) => setAutoStart(e.target.checked)}
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
+          <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
+          <button onClick={shuffleArray}>Shuffle</button>
+        </div>
       </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Sorting Speed (ms): {sortDelay}
-          <input
-            type="range"
-            value={sortDelay}
-            onChange={(e) => setSortDelay(Number(e.target.value))}
-            min="10"
-            max="1000"
-            step="10"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Auto-Start Sorting:
-          <input
-            type="checkbox"
-            checked={autoStart}
-            onChange={(e) => setAutoStart(e.target.checked)}
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
-      </div>
-
-      <canvas ref={canvasRef} width={arraySize * 40} height={200}></canvas>
-
-      <div style={{ marginTop: '10px' }}>
-        <button onClick={startSorting} disabled={isSorting}>
-          Start Sorting
-        </button>
-        <button onClick={stopSorting} disabled={!isSorting}>
-          Stop Sorting
-        </button>
-        <button onClick={shuffleArray}>Shuffle</button>
+      <div className="canvas-container">
+        <canvas ref={canvasRef} width={500} height={300}></canvas>
+        <p className="description">
+        Selection Sort is an in-place comparison-based algorithm that repeatedly selects the smallest element from the unsorted part of the list and swaps it with the leftmost unsorted element. 
+        Its \( O(n^2) \) complexity makes it inefficient for large datasets.
+        </p>
       </div>
     </div>
   );

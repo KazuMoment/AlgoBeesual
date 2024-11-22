@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './MergeSortVisualizer.css';
+
 
 function MergeSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -154,8 +156,8 @@ function MergeSortVisualizer() {
   }, [arr]);
 
   return (
-    <div>
-      <div style={{ marginBottom: '10px' }}>
+    <div className="merge-sort-visualizer">
+      <div className="controls">
         <label>
           Array Size: {arraySize}
           <input
@@ -164,12 +166,8 @@ function MergeSortVisualizer() {
             onChange={handleArraySizeChange}
             min="5"
             max="50"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
         <label>
           Sorting Speed (ms): {sortDelay}
           <input
@@ -179,30 +177,32 @@ function MergeSortVisualizer() {
             min="10"
             max="1000"
             step="10"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
         <label>
           Auto-Start Sorting:
           <input
             type="checkbox"
             checked={autoStart}
             onChange={(e) => setAutoStart(e.target.checked)}
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
           />
         </label>
+        <div>
+          <button onClick={startSorting} disabled={isSorting || animations.length === 0}>
+            Start Sorting
+          </button>
+          <button onClick={stopSorting} disabled={!isSorting}>
+            Stop Sorting
+          </button>
+          <button onClick={shuffleArray}>Shuffle</button>
+        </div>
       </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
-        <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-        <button onClick={shuffleArray}>Shuffle</button>
-      </div>
-
       <canvas ref={canvasRef} width={500} height={300}></canvas>
+      <p className="description">
+        Merge Sort is an efficient, divide-and-conquer sorting algorithm. It works by recursively
+        splitting the array into smaller subarrays, sorting them, and then merging them back together.
+        The time complexity is O(n log n), making it suitable for larger datasets.
+      </p>
     </div>
   );
 }

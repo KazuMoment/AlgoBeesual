@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import './InsertionSortVisualizer.css';
 
 function InsertionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -112,55 +113,60 @@ function InsertionSortVisualizer() {
   }, [arr]);
 
   return (
-    <div>
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Array Size: {arraySize}
-          <input
-            type="range"
-            value={arraySize}
-            onChange={handleArraySizeChange}
-            min="5"
-            max="50"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
+    <div className="sort-container">
+      <div className="controls">
+        <div className="control-item">
+          <label>
+            Array Size: {arraySize}
+            <input
+              type="range"
+              value={arraySize}
+              onChange={handleArraySizeChange}
+              min="5"
+              max="50"
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <label>
+            Sorting Speed (ms): {sortDelay}
+            <input
+              type="range"
+              value={sortDelay}
+              onChange={(e) => setSortDelay(Number(e.target.value))}
+              min="10"
+              max="1000"
+              step="10"
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <label>
+            Auto-Start Sorting:
+            <input
+              type="checkbox"
+              checked={autoStart}
+              onChange={(e) => setAutoStart(e.target.checked)}
+            />
+          </label>
+        </div>
+
+        <div className="control-item">
+          <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
+          <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
+          <button onClick={shuffleArray}>Shuffle</button>
+        </div>
       </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Sorting Speed (ms): {sortDelay}
-          <input
-            type="range"
-            value={sortDelay}
-            onChange={(e) => setSortDelay(Number(e.target.value))}
-            min="10"
-            max="1000"
-            step="10"
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
+      <div className="canvas-container">
+        <canvas ref={canvasRef} width={500} height={300}></canvas>
       </div>
 
-      <div style={{ marginBottom: '10px' }}>
-        <label>
-          Auto-Start Sorting:
-          <input
-            type="checkbox"
-            checked={autoStart}
-            onChange={(e) => setAutoStart(e.target.checked)}
-            style={{ marginLeft: '10px', verticalAlign: 'middle' }}
-          />
-        </label>
-      </div>
-
-      <div style={{ marginBottom: '10px' }}>
-        <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
-        <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-        <button onClick={shuffleArray}>Shuffle</button>
-      </div>
-
-      <canvas ref={canvasRef} width={500} height={300}></canvas>
+      <p className="description">
+        Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
+      </p>
     </div>
   );
 }

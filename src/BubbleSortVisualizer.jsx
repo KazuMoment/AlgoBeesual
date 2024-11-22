@@ -151,13 +151,9 @@ function BubbleSortVisualizer() {
       <canvas ref={canvasRef} width={500} height={300}></canvas>
 
       <p className="description">
-      Bubble Sort is a basic comparison-based sorting algorithm. It repeatedly compares adjacent elements and swaps them if needed. The process continues until no swaps are required, indicating the list is sorted. While simple, its \( O(n^2) \) complexity makes it inefficient for large datasets.  
-
-      Algorithm Steps:  
-      1. Compare adjacent elements; if the first is greater, swap them.  
-      2. Move to the next pair and repeat until the end of the list.  
-      3. Check if sorting is complete; if not, repeat the process.  
-      4. The sorted array is the final output.
+      Bubble Sort is a basic comparison-based sorting algorithm. 
+      It repeatedly compares adjacent elements and swaps them if needed. The process continues until no swaps are required, indicating the list is sorted. 
+      While simple, its \( O(n^2) \) complexity makes it inefficient for large datasets.  
       </p>
     </div>
   );
