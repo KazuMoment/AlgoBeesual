@@ -74,9 +74,6 @@ function App() {
                         <ListItem button onClick={() => handleSelection("bubbleSort")}>
                             <ListItemText primary="Bubble Sort" />
                         </ListItem>
-                        <ListItem button onClick={() => handleSelection("quickSort")}>
-                            <ListItemText primary="Quick Sort" />
-                        </ListItem>
                         <ListItem button onClick={() => handleSelection("mergeSort")}>
                             <ListItemText primary="Merge Sort" />
                         </ListItem>
