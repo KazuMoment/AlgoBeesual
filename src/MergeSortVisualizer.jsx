@@ -158,10 +158,12 @@ function MergeSortVisualizer() {
   }, [arr]);
 
   return (
-    <div className="merge-sort-visualizer">
+    <div className="visualizer-container">
       <div className="controls">
         <label>
           Array Size: {arraySize}
+          <div className="slider-container">
+          <span className="slider-label">{5}</span>
           <input
             type="range"
             value={arraySize}
@@ -169,18 +171,26 @@ function MergeSortVisualizer() {
             min="5"
             max="50"
           />
+          <span className="slider-label">{50}</span>
+          </div>
         </label>
+
         <label>
           Sorting Speed (ms): {sortDelay}
-          <input
-            type="range"
-            value={sortDelay}
-            onChange={(e) => setSortDelay(Number(e.target.value))}
-            min="10"
-            max="1000"
-            step="10"
-          />
+          <div className="slider-container">
+            <span className="slider-label">{10}</span>
+            <input
+              type="range"
+              value={sortDelay}
+              onChange={(e) => setSortDelay(Number(e.target.value))}
+              min="10"
+              max="1000"
+              step="10"
+            />
+            <span className="slider-label">{1000}</span>
+          </div>
         </label>
+
         <label>
           Auto-Start Sorting:
           <input
@@ -189,6 +199,7 @@ function MergeSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
+
         <div className="control-button">
         <button onClick={startSorting} disabled={isSorting}>
           <img src={playIcon} alt="Play" className="icon" />
@@ -201,6 +212,7 @@ function MergeSortVisualizer() {
         </button>
         </div>
       </div>
+
       <canvas ref={canvasRef} width={500} height={300}></canvas>
       <p className="description">
         Merge Sort is an efficient, divide-and-conquer sorting algorithm. It works by recursively
