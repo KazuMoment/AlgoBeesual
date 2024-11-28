@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './BubbleVisualizer.css';
+import playIcon from './assets/play icon.png';
+import pauseIcon from './assets/stop icon.png';
+import shuffleIcon from './assets/shuffle w honey icon.png';
 
 function BubbleSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -110,29 +113,39 @@ function BubbleSortVisualizer() {
   }, [arr]);
 
   return (
-    <div>
+    <div className="visualizer-container">
       <div className="controls">
         <label>
           Array Size: {arraySize}
-          <input
-            type="range"
-            value={arraySize}
-            onChange={handleArraySizeChange}
-            min="5"
-            max="50"
-          />
+          <div className="slider-container">
+            <span className="slider-label">{5}</span>
+            <input
+              type="range"
+              value={arraySize}
+              onChange={(e) => setArraySize(Number(e.target.value))}
+              min="5"
+              max="50"
+            />
+            <span className="slider-label">{50}</span>
+          </div>
         </label>
+        
         <label>
           Sorting Speed (ms): {sortDelay}
-          <input
-            type="range"
-            value={sortDelay}
-            onChange={(e) => setSortDelay(Number(e.target.value))}
-            min="10"
-            max="1000"
-            step="10"
-          />
+          <div className="slider-container">
+            <span className="slider-label">{10}</span>
+            <input
+              type="range"
+              value={sortDelay}
+              onChange={(e) => setSortDelay(Number(e.target.value))}
+              min="10"
+              max="1000"
+              step="10"
+            />
+            <span className="slider-label">{1000}</span>
+          </div>
         </label>
+        
         <label>
           Auto-Start Sorting:
           <input
@@ -141,19 +154,27 @@ function BubbleSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
-        <div>
-          <button onClick={startSorting} disabled={isSorting || isSorted}>Start Sorting</button>
-          <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-          <button onClick={shuffleArray}>Shuffle</button>
+  
+        <div className="control-button">
+          <button onClick={startSorting} disabled={isSorting || isSorted}>
+            <img src={playIcon} alt="Play" className="icon" />
+          </button>
+          <button onClick={stopSorting} disabled={!isSorting}>
+            <img src={pauseIcon} alt="Pause" className="icon" />
+          </button>
+          <button onClick={shuffleArray}>
+            <img src={shuffleIcon} alt="Shuffle" className="icon" />
+          </button>
         </div>
       </div>
-
       <canvas ref={canvasRef} width={500} height={300}></canvas>
 
+
       <p className="description">
-      Bubble Sort is a basic comparison-based sorting algorithm. 
-      It repeatedly compares adjacent elements and swaps them if needed. The process continues until no swaps are required, indicating the list is sorted. 
-      While simple, its \( O(n^2) \) complexity makes it inefficient for large datasets.  
+      Bubble Sort is a basic comparison-based sorting algorithm.
+      It repeatedly compares adjacent elements and swaps them if needed. 
+      The process continues until no swaps are required, indicating the list is sorted. <br></br> 
+      While simple, its <strong> \( O(n^2) \) </strong> complexity makes it inefficient for large datasets.  
       </p>
     </div>
   );

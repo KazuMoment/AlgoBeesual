@@ -1,42 +1,63 @@
-.controls {
-    position: absolute;
-    top: 75px; /* Increased top margin for spacing */
-    right: 20px;
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    z-index: 10;
-  }
-  
-  .controls label {
-    display: block;
-    margin-bottom: 15px;
-    color: #333;
-  }
-  
-  .controls input[type="range"] {
-    width: 100%;
-  }
-  
-  .controls input[type="checkbox"] {
-    margin-left: 5px;
-  }
-  
-  .controls button {
-    margin-right: 5px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  canvas {
-    display: block;
-    margin: 50px auto;
-    background-color: #ffc107;
-    border-radius: 10px;
-  }
+.visualizer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+}
 
-  
+button{
+  margin-right: 5px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.slider-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.slider-label {
+  font-size: 14px;
+  color: #333;
+}
+
+input[type="range"] {
+  flex-grow: 1;
+  height: 5px;
+  background: #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #b65608;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+canvas {
+  background-color: #ffc107;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 10px;
+  color: #555;
+}

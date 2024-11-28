@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './MergeSortVisualizer.css';
-
+import playIcon from './assets/play icon.png';
+import pauseIcon from './assets/stop icon.png';
+import shuffleIcon from './assets/shuffle w honey icon.png';
 
 function MergeSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -187,14 +189,16 @@ function MergeSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
-        <div>
-          <button onClick={startSorting} disabled={isSorting || animations.length === 0}>
-            Start Sorting
-          </button>
-          <button onClick={stopSorting} disabled={!isSorting}>
-            Stop Sorting
-          </button>
-          <button onClick={shuffleArray}>Shuffle</button>
+        <div className="control-button">
+        <button onClick={startSorting} disabled={isSorting}>
+          <img src={playIcon} alt="Play" className="icon" />
+        </button>
+        <button onClick={stopSorting} disabled={!isSorting}>
+          <img src={pauseIcon} alt="Pause" className="icon" />
+        </button>
+        <button onClick={shuffleArray}>
+          <img src={shuffleIcon} alt="Shuffle" className="icon" />
+        </button>
         </div>
       </div>
       <canvas ref={canvasRef} width={500} height={300}></canvas>

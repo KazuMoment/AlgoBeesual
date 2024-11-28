@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './InsertionSortVisualizer.css';
+import playIcon from './assets/play icon.png';
+import pauseIcon from './assets/stop icon.png';
+import shuffleIcon from './assets/shuffle w honey icon.png';
 
 function InsertionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -113,24 +116,30 @@ function InsertionSortVisualizer() {
   }, [arr]);
 
   return (
-    <div className="sort-container">
-      <div className="controls">
-        <div className="control-item">
-          <label>
-            Array Size: {arraySize}
-            <input
-              type="range"
-              value={arraySize}
-              onChange={handleArraySizeChange}
-              min="5"
-              max="50"
-            />
-          </label>
-        </div>
-
-        <div className="control-item">
-          <label>
-            Sorting Speed (ms): {sortDelay}
+    <div className="visualizer-container">
+    <div className="controls">
+      <div className="control-item">
+        <label>
+          Array Size: {arraySize}
+          <div className="slider-container">
+          <span className="slider-label">{5}</span>
+          <input
+            type="range"
+            value={arraySize}
+            onChange={handleArraySizeChange}
+            min="5"
+            max="50"
+          />
+          <span className="slider-label">{50}</span>
+          </div>
+        </label>
+      </div>
+  
+    
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <div className="slider-container">
+            <span className="slider-label">{10}</span>
             <input
               type="range"
               value={sortDelay}
@@ -139,35 +148,44 @@ function InsertionSortVisualizer() {
               max="1000"
               step="10"
             />
-          </label>
-        </div>
+            <span className="slider-label">{1000}</span>
+          </div>
+        </label>
 
-        <div className="control-item">
-          <label>
-            Auto-Start Sorting:
-            <input
-              type="checkbox"
-              checked={autoStart}
-              onChange={(e) => setAutoStart(e.target.checked)}
-            />
-          </label>
-        </div>
 
-        <div className="control-item">
-          <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
-          <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-          <button onClick={shuffleArray}>Shuffle</button>
-        </div>
+  
+      <div className="control-item">
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
+          />
+        </label>
       </div>
-
-      <div className="canvas-container">
-        <canvas ref={canvasRef} width={500} height={300}></canvas>
+  
+      <div className="control-button">
+        <button onClick={startSorting} disabled={isSorting}>
+          <img src={playIcon} alt="Play" className="icon" />
+        </button>
+        <button onClick={stopSorting} disabled={!isSorting}>
+          <img src={pauseIcon} alt="Pause" className="icon" />
+        </button>
+        <button onClick={shuffleArray}>
+          <img src={shuffleIcon} alt="Shuffle" className="icon" />
+        </button>
       </div>
-
-      <p className="description">
-        Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
-      </p>
     </div>
+  
+    <div className="canvas-container">
+      <canvas ref={canvasRef} width={500} height={300}></canvas>
+    </div>
+  
+    <p className="description">
+      Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
+    </p>
+  </div>
   );
 }
 

@@ -110,17 +110,16 @@ body {
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 10px;
+    border-radius: 20px;
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
 }
 
-.control-button:hover {
-    background-color: #E5B549;
-    transform: scale(1.05);
+button{
+    border-radius: 10px;
 }
+
 
 .control-icon {
     font-size: 1.5rem;

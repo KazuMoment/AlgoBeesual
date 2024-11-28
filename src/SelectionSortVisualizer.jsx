@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './SelectionSortVisualizer.css';
+import playIcon from './assets/play icon.png';
+import pauseIcon from './assets/stop icon.png';
+import shuffleIcon from './assets/shuffle w honey icon.png';
 
 function SelectionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -108,60 +111,65 @@ function SelectionSortVisualizer() {
 
   return (
     <div className="visualizer-container">
-      <div className="controls">
-        <div className="control-item">
-          <label>
-            Array Size: {arraySize}
-            <input
-              type="range"
-              value={arraySize}
-              onChange={handleArraySizeChange}
-              min="5"
-              max="50"
-            />
-          </label>
-        </div>
-
-        <div className="control-item">
-          <label>
-            Sorting Speed (ms): {sortDelay}
-            <input
-              type="range"
-              value={sortDelay}
-              onChange={(e) => setSortDelay(Number(e.target.value))}
-              min="10"
-              max="1000"
-              step="10"
-            />
-          </label>
-        </div>
-
-        <div className="control-item">
-          <label>
-            Auto-Start Sorting:
-            <input
-              type="checkbox"
-              checked={autoStart}
-              onChange={(e) => setAutoStart(e.target.checked)}
-            />
-          </label>
-        </div>
-
-        <div className="control-item">
-          <button onClick={startSorting} disabled={isSorting}>Start Sorting</button>
-          <button onClick={stopSorting} disabled={!isSorting}>Stop Sorting</button>
-          <button onClick={shuffleArray}>Shuffle</button>
-        </div>
+    <div className="controls">
+      <div className="control-item">
+        <label>
+          Array Size: {arraySize}
+          <input
+            type="range"
+            value={arraySize}
+            onChange={handleArraySizeChange}
+            min="5"
+            max="50"
+          />
+        </label>
       </div>
-
-      <div className="canvas-container">
-        <canvas ref={canvasRef} width={500} height={300}></canvas>
-        <p className="description">
-        Selection Sort is an in-place comparison-based algorithm that repeatedly selects the smallest element from the unsorted part of the list and swaps it with the leftmost unsorted element. 
-        Its \( O(n^2) \) complexity makes it inefficient for large datasets.
-        </p>
+  
+      <div className="control-item">
+        <label>
+          Sorting Speed (ms): {sortDelay}
+          <input
+            type="range"
+            value={sortDelay}
+            onChange={(e) => setSortDelay(Number(e.target.value))}
+            min="10"
+            max="1000"
+            step="10"
+          />
+        </label>
+      </div>
+  
+      <div className="control-item">
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
+          />
+        </label>
+      </div>
+  
+      <div className="control-button">
+        <button className="button" onClick={startSorting} disabled={isSorting}>
+          <img src={playIcon} alt="Play" className="icon" /> 
+        </button>
+        <button className="button" onClick={stopSorting} disabled={!isSorting}>
+          <img src={pauseIcon} alt="Pause" className="icon" />
+        </button>
+        <button className="button" onClick={shuffleArray}>
+          <img src={shuffleIcon} alt="Shuffle" className="icon" />
+        </button>
       </div>
     </div>
+  
+    <div className="canvas-container">
+      <canvas ref={canvasRef} width={500} height={300}></canvas>
+      <p className="description">
+        Selection Sort is an in-place comparison-based algorithm that repeatedly selects the smallest element from the unsorted part of the list and swaps it with the leftmost unsorted element. Its \( O(n^2) \) complexity makes it inefficient for large datasets.
+      </p>
+    </div>
+  </div>
   );
 }
 

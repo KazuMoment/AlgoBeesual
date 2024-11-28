@@ -24,13 +24,11 @@
     margin-left: 5px;
   }
   
-  .controls button {
-    margin-right: 5px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .icon {
+    width: 24px;
+    height: 24px;
   }
+  
   
   canvas {
     display: block;
@@ -39,4 +37,19 @@
     border-radius: 10px;
   }
 
+  .button-container button {
+    background-color: #c48f1c;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
   
+  .button-container button:hover {
+    background-color: #b49017;
+  }
+  
+  .button-container button:disabled {
+    background-color: #ddd;
+    cursor: not-allowed;
+  }
