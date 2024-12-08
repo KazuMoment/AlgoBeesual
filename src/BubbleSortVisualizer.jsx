@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './BubbleVisualizer.css';
+import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
@@ -96,17 +96,21 @@ function BubbleSortVisualizer() {
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Set the background color to a soft honey yellow or white
+    ctx.fillStyle = '#FFF9C4'; // Warm pale yellow for the canvas background
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    
     array.forEach((value, index) => {
       if (isSorting && (index === j || index === j + 1)) {
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = '#FFD700'; // Dark honey brown for the rectangles
       } else {
-        ctx.fillStyle = 'teal';
+        ctx.fillStyle = '#5a3019'; // Default color for other elements
       }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
+  
 
   useEffect(() => {
     drawArray(arr);

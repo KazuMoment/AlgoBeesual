@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './MergeSortVisualizer.css';
+import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
@@ -15,7 +15,6 @@ function MergeSortVisualizer() {
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
 
-  
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
     setArr(newArr);
@@ -23,7 +22,6 @@ function MergeSortVisualizer() {
     setAnimations([]);
     drawArray(newArr); 
   };
-
 
   const startSorting = () => {
     setIsSorting(true);
@@ -33,13 +31,11 @@ function MergeSortVisualizer() {
     setStep(0); 
   };
 
-  
   const stopSorting = () => {
     setIsSorting(false);
     cancelAnimationFrame(animationFrameId.current);
   };
 
-  
   const shuffleArray = () => {
     const shuffledArr = [...arr];
     for (let i = shuffledArr.length - 1; i > 0; i--) {
@@ -52,14 +48,12 @@ function MergeSortVisualizer() {
     drawArray(shuffledArr); 
   };
 
-
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
     initializeArray(newSize); 
   };
 
- 
   const mergeSort = (array, animations) => {
     if (array.length <= 1) return array;
 
@@ -73,7 +67,6 @@ function MergeSortVisualizer() {
     return merge(sortedLeft, sortedRight, animations);
   };
 
-  
   const merge = (left, right, animations) => {
     let result = [];
     let leftIndex = 0;
@@ -105,7 +98,6 @@ function MergeSortVisualizer() {
     return result;
   };
 
-  
   useEffect(() => {
     if (!isSorting || animations.length === 0) return;
 
@@ -128,7 +120,6 @@ function MergeSortVisualizer() {
     return () => clearTimeout(animationFrameId.current);
   }, [animations, isSorting, step, sortDelay]);
 
-  
   useEffect(() => {
     initializeArray(arraySize); 
     if (autoStart) {
@@ -136,24 +127,29 @@ function MergeSortVisualizer() {
     }
   }, [autoStart, arraySize]);
 
-  
   const drawArray = (array, leftIdx = null, rightIdx = null) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Set the background color
+    ctx.fillStyle = '#FFF9C4'; // Set canvas background color (light yellow)
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas with the background color
+    
+    // Draw the array elements
     array.forEach((value, index) => {
       if (index === leftIdx || index === rightIdx) {
-        ctx.fillStyle = 'red'; 
+        ctx.fillStyle = '#FFD700'; // Golden Yellow for comparisons
       } else {
-        ctx.fillStyle = 'teal'; 
+        ctx.fillStyle = '#5a3019'; // Dark Honey Brown for normal elements
       }
+      
+      // Draw the rectangle representing the array element
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
+  
 
   useEffect(() => {
-    
     drawArray(arr);
   }, [arr]);
 
@@ -201,15 +197,15 @@ function MergeSortVisualizer() {
         </label>
 
         <div className="control-button">
-        <button onClick={startSorting} disabled={isSorting}>
-          <img src={playIcon} alt="Play" className="icon" />
-        </button>
-        <button onClick={stopSorting} disabled={!isSorting}>
-          <img src={pauseIcon} alt="Pause" className="icon" />
-        </button>
-        <button onClick={shuffleArray}>
-          <img src={shuffleIcon} alt="Shuffle" className="icon" />
-        </button>
+          <button onClick={startSorting} disabled={isSorting}>
+            <img src={playIcon} alt="Play" className="icon" />
+          </button>
+          <button onClick={stopSorting} disabled={!isSorting}>
+            <img src={pauseIcon} alt="Pause" className="icon" />
+          </button>
+          <button onClick={shuffleArray}>
+            <img src={shuffleIcon} alt="Shuffle" className="icon" />
+          </button>
         </div>
       </div>
 

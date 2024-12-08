@@ -5,13 +5,12 @@ import BubbleSortVisualizer from './BubbleSortVisualizer';  // Import the Bubble
 import InsertionSortVisualizer from './InsertionSortVisualizer';
 import MergeSortVisualizer from './MergeSortVisualizer';
 import SelectionSortVisualizer from './SelectionSortVisualizer';
-import Home from './home';
-import './App.css';
-
+import Home from './Home';
+import './App.css';  // Make sure the styles match
 
 function App() {
     const [open, setOpen] = useState(false);
-    const [selectedAlgorithm, setSelectedAlgorithm] = useState('home');  // Set 'home' as the default
+    const [selectedAlgorithm, setSelectedAlgorithm] = useState('home');  // Default is 'home'
 
     const toggleDrawer = () => setOpen(!open);
 
@@ -25,19 +24,63 @@ function App() {
     return (
         <div>
             {/* AppBar for the header */}
-            <AppBar position="fixed" sx={{ backgroundColor: '#0C2626' }}>
-                <Toolbar disableGutters>
-                    <Button color="inherit" onClick={toggleDrawer}>
-                        <MenuIcon />
-                    </Button>
-                    <Typography variant="h6" sx={{ marginLeft: 2 }}>
-                        AlgoBeesual
-                    </Typography>
-                </Toolbar>
-            </AppBar>
+            <AppBar
+    position="fixed"
+    sx={{
+        background: 'linear-gradient(to right, #FFB02E, #5A3019)', // Honey gold to dark honey brown gradient
+        color: '#FFFBE6', // Soft cream color for contrast
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)', // Slightly deeper shadow for depth
+    }}
+>
+    <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: '0 20px' }}>
+        {/* Left Section - Burger Icon and Title */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Burger Icon */}
+            <Button
+                color="inherit"
+                onClick={toggleDrawer}
+                sx={{
+                    minWidth: 0,
+                    padding: 0,
+                    marginRight: '10px',
+                    '&:hover': {
+                        backgroundColor: 'transparent',
+                    },
+                }}
+            >
+                <MenuIcon
+                    sx={{
+                        fontSize: '2rem',
+                        color: '#FFFBE6', // Cream for better visibility
+                        '&:hover': {
+                            color: '#CC9918', // Brighter golden yellow on hover
+                        },
+                    }}
+                />
+            </Button>
+
+            {/* Title */}
+            <Typography
+                variant="h6"
+                sx={{
+                    fontFamily: 'Poppins, sans-serif',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    color: '#FFFBE6', // Matches the bee theme
+                    letterSpacing: '1px', // Slight spacing for elegance
+                }}
+            >
+                AlgoBeesual
+            </Typography>
+        </div>
+    </Toolbar>
+</AppBar>
+
+
+
 
             {/* Main content area */}
-            <div        style={{
+            <div style={{
                     marginTop: '80px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -53,39 +96,94 @@ function App() {
                 {selectedAlgorithm === 'home' && <Home />}  {/* Display Home component */}
             </div>
 
-            {/* Drawer */}
             <Drawer
-                anchor="left"
-                open={open}
-                onClose={toggleDrawer}
-                variant="temporary"
+    anchor="left"
+    open={open}
+    onClose={toggleDrawer}
+    variant="temporary"
+    sx={{
+        '& .MuiDrawer-paper': {
+            backgroundColor: '#1B1B1B',  // Darker background for a more refined look
+            color: '#FFD54F',  // Honey yellow text for contrast
+            borderTopRightRadius: '40px',
+            borderBottomRightRadius: '40px',
+            padding: '20px',
+            width: '260px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',  // Darker shadow for a more subtle look
+            transition: 'all 0.3s ease',
+        },
+    }}
+>
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {/* Drawer Header */}
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column',
+                padding: '10px 0',
+                marginBottom: '20px',
+                borderBottom: '2px solid #FFD54F',  // Golden yellow border for contrast
+            }}
+        >
+            <Typography
+                variant="h6"
                 sx={{
-                    '& .MuiDrawer-paper': {
-                        backgroundColor: '#CC9918',
-                        color: 'white',
-                    },
+                    fontFamily: 'Quicksand, sans-serif',
+                    fontWeight: 'bold',
+                    color: 'black',  // Changed to black for text color
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
                 }}
             >
-                <div style={{ width: 250 }}>
-                    <List>
-                        <ListItem button onClick={() => handleSelection("home")}>
-                            <ListItemText primary="Home" />
-                        </ListItem>
-                        <ListItem button onClick={() => handleSelection("bubbleSort")}>
-                            <ListItemText primary="Bubble Sort" />
-                        </ListItem>
-                        <ListItem button onClick={() => handleSelection("mergeSort")}>
-                            <ListItemText primary="Merge Sort" />
-                        </ListItem>
-                        <ListItem button onClick={() => handleSelection("selectionSort")}>
-                            <ListItemText primary="Selection Sort" />
-                        </ListItem>
-                        <ListItem button onClick={() => handleSelection("insertionSort")}>
-                            <ListItemText primary="Insertion Sort" />
-                        </ListItem>
-                    </List>
-                </div>
-            </Drawer>
+                AlgoBeesual
+            </Typography>
+        </div>
+
+        {/* Drawer Items */}
+        <List sx={{ padding: 0 }}>
+            {[
+                { label: 'Home', key: 'home' },
+                { label: 'Bubble Sort', key: 'bubbleSort' },
+                { label: 'Merge Sort', key: 'mergeSort' },
+                { label: 'Selection Sort', key: 'selectionSort' },
+                { label: 'Insertion Sort', key: 'insertionSort' },
+            ].map((item, index) => (
+                <ListItem
+                    key={index}
+                    button
+                    onClick={() => handleSelection(item.key)}
+                    sx={{
+                        marginBottom: '10px',
+                        padding: '12px',
+                        borderRadius: '10px',
+                        backgroundColor: '#333',  // Dark background for items
+                        color: '#FFD54F',  // Yellow text
+                        '&:hover': {
+                            backgroundColor: '#444',  // Slightly lighter on hover
+                            transform: 'scale(1.03)', // Slight scale effect for interaction
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.4)',
+                        },
+                    }}
+                >
+                    <ListItemText
+                        primary={item.label}
+                        sx={{
+                            textAlign: 'center',
+                            fontFamily: 'Quicksand, sans-serif',
+                            fontWeight: 'bold',
+                            textTransform: 'capitalize',
+                        }}
+                    />
+                </ListItem>
+            ))}
+        </List>
+    </div>
+</Drawer>
+
+
+
 
         </div>
     );

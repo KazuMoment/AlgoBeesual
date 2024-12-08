@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './InsertionSortVisualizer.css';
+import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
@@ -101,11 +101,14 @@ function InsertionSortVisualizer() {
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    ctx.fillStyle = '#FFF9C4';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
     array.forEach((value, index) => {
       if (index === i || index === j) {
-        ctx.fillStyle = 'red';
+        ctx.fillStyle = '#FFD700';
       } else {
-        ctx.fillStyle = 'teal';
+        ctx.fillStyle = '#5a3019';
       }
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
@@ -117,24 +120,23 @@ function InsertionSortVisualizer() {
 
   return (
     <div className="visualizer-container">
-    <div className="controls">
-      <div className="control-item">
-        <label>
-          Array Size: {arraySize}
-          <div className="slider-container">
-          <span className="slider-label">{5}</span>
-          <input
-            type="range"
-            value={arraySize}
-            onChange={handleArraySizeChange}
-            min="5"
-            max="50"
-          />
-          <span className="slider-label">{50}</span>
-          </div>
-        </label>
-      </div>
-  
+      <div className="controls">
+        <div className="control-item">
+          <label>
+            Array Size: {arraySize}
+            <div className="slider-container">
+              <span className="slider-label">{5}</span>
+              <input
+                type="range"
+                value={arraySize}
+                onChange={handleArraySizeChange}
+                min="5"
+                max="50"
+              />
+              <span className="slider-label">{50}</span>
+            </div>
+          </label>
+        </div>
     
         <label>
           Sorting Speed (ms): {sortDelay}
@@ -151,41 +153,39 @@ function InsertionSortVisualizer() {
             <span className="slider-label">{1000}</span>
           </div>
         </label>
-
-
-  
-      <div className="control-item">
-        <label>
-          Auto-Start Sorting:
-          <input
-            type="checkbox"
-            checked={autoStart}
-            onChange={(e) => setAutoStart(e.target.checked)}
-          />
-        </label>
+    
+        <div className="control-item">
+          <label>
+            Auto-Start Sorting:
+            <input
+              type="checkbox"
+              checked={autoStart}
+              onChange={(e) => setAutoStart(e.target.checked)}
+            />
+          </label>
+        </div>
+    
+        <div className="control-button">
+          <button onClick={startSorting} disabled={isSorting}>
+            <img src={playIcon} alt="Play" className="icon" />
+          </button>
+          <button onClick={stopSorting} disabled={!isSorting}>
+            <img src={pauseIcon} alt="Pause" className="icon" />
+          </button>
+          <button onClick={shuffleArray}>
+            <img src={shuffleIcon} alt="Shuffle" className="icon" />
+          </button>
+        </div>
       </div>
-  
-      <div className="control-button">
-        <button onClick={startSorting} disabled={isSorting}>
-          <img src={playIcon} alt="Play" className="icon" />
-        </button>
-        <button onClick={stopSorting} disabled={!isSorting}>
-          <img src={pauseIcon} alt="Pause" className="icon" />
-        </button>
-        <button onClick={shuffleArray}>
-          <img src={shuffleIcon} alt="Shuffle" className="icon" />
-        </button>
+    
+      <div className="canvas-container">
+        <canvas ref={canvasRef} width={500} height={300}></canvas>
       </div>
+    
+      <p className="description">
+        Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
+      </p>
     </div>
-  
-    <div className="canvas-container">
-      <canvas ref={canvasRef} width={500} height={300}></canvas>
-    </div>
-  
-    <p className="description">
-      Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
-    </p>
-  </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './SelectionSortVisualizer.css';
+import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
@@ -83,14 +83,19 @@ function SelectionSortVisualizer() {
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Set the background color to Soft Golden Yellow
+    ctx.fillStyle = '#FFF9C4'; // Soft Golden Yellow background color
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas with the background color
+  
+    // Draw the array elements
     array.forEach((value, index) => {
-      ctx.fillStyle = index === minIdx ? 'red' : 'teal';
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
+      // Highlight the minIdx element in Dark Honey Brown
+      ctx.fillStyle = index === minIdx ? '#FFD700' : '#5a3019'; // Use Dark Honey Brown for others
+      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2); // Draw each array element
     });
   };
-
+  
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
