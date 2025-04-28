@@ -13,11 +13,11 @@ function BubbleSortVisualizer() {
   const [arraySize, setArraySize] = useState(15);
   const [sortDelay, setSortDelay] = useState(100);
   const [autoStart, setAutoStart] = useState(true);
+  const [userInput, setUserInput] = useState(''); // State for user input
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  const initializeArray = (size = arraySize) => {
-    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (newArr) => {
     setArr(newArr);
     setI(0);
     setJ(0);
@@ -51,7 +51,24 @@ function BubbleSortVisualizer() {
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
-    initializeArray(newSize);
+    initializeArray(Array.from({ length: newSize }, () => Math.floor(Math.random() * 100) + 1));
+  };
+
+  const handleUserInputChange = (event) => {
+    setUserInput(event.target.value);
+  };
+
+  const handleSubmitUserInput = () => {
+    const inputArray = userInput
+      .split(',')
+      .map((str) => parseInt(str.trim(), 10))
+      .filter((num) => !isNaN(num));
+
+    if (inputArray.length > 0) {
+      initializeArray(inputArray);
+    } else {
+      alert("Invalid input! Please enter numbers separated by commas.");
+    }
   };
 
   useEffect(() => {
@@ -87,7 +104,7 @@ function BubbleSortVisualizer() {
   }, [arr, i, j, isSorting, sortDelay]);
 
   useEffect(() => {
-    initializeArray(arraySize);
+    initializeArray(Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1));
     if (autoStart) {
       startSorting();
     }
@@ -107,7 +124,7 @@ function BubbleSortVisualizer() {
       } else {
         ctx.fillStyle = '#5a3019'; // Default color for other elements
       }
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
+      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 3, (canvas.width / array.length) - 2, value * 3);
     });
   };
   
@@ -158,6 +175,18 @@ function BubbleSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
+
+        {/* Input for custom array */}
+        <div>
+          <label>Custom Array (comma separated):</label>
+          <input
+            type="text"
+            value={userInput}
+            onChange={handleUserInputChange}
+            placeholder="Enter numbers separated by commas"
+          />
+          <button onClick={handleSubmitUserInput}>Submit</button>
+        </div>
   
         <div className="control-button">
           <button onClick={startSorting} disabled={isSorting || isSorted}>
@@ -173,12 +202,11 @@ function BubbleSortVisualizer() {
       </div>
       <canvas ref={canvasRef} width={500} height={300}></canvas>
 
-
       <p className="description">
-      Bubble Sort is a basic comparison-based sorting algorithm.
-      It repeatedly compares adjacent elements and swaps them if needed. 
-      The process continues until no swaps are required, indicating the list is sorted. <br></br> 
-      While simple, its <strong> \( O(n^2) \) </strong> complexity makes it inefficient for large datasets.  
+        Bubble Sort is a basic comparison-based sorting algorithm.
+        It repeatedly compares adjacent elements and swaps them if needed. 
+        The process continues until no swaps are required, indicating the list is sorted. <br></br> 
+        While simple, its <strong> \( O(n^2) \) </strong> complexity makes it inefficient for large datasets.  
       </p>
     </div>
   );

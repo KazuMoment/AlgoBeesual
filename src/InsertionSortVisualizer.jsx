@@ -9,64 +9,78 @@ function InsertionSortVisualizer() {
   const [i, setI] = useState(1);
   const [j, setJ] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
+  const [isSorted, setIsSorted] = useState(false);
   const [arraySize, setArraySize] = useState(15);
-  const [sortDelay, setSortDelay] = useState(100); 
-  const [autoStart, setAutoStart] = useState(true); 
+  const [sortDelay, setSortDelay] = useState(100);
+  const [autoStart, setAutoStart] = useState(true);
+  const [userInput, setUserInput] = useState(''); // State for user input
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
 
-  
-  const initializeArray = (size = arraySize) => {
-    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (newArr) => {
     setArr(newArr);
     setI(1);
     setJ(0);
-    drawArray(newArr); 
+    setIsSorted(false);
+    drawArray(newArr);
   };
 
-  
   const startSorting = () => {
     setIsSorting(true);
+    setIsSorted(false);
   };
 
-  
   const stopSorting = () => {
     setIsSorting(false);
     clearTimeout(timeoutRef.current);
   };
 
-  
   const shuffleArray = () => {
     const shuffledArr = [...arr];
     for (let i = shuffledArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]]; 
+      [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
     }
     setArr(shuffledArr);
     setI(1);
     setJ(0);
-    drawArray(shuffledArr); 
+    setIsSorted(false);
+    drawArray(shuffledArr);
   };
 
- 
   const handleArraySizeChange = (event) => {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
-    initializeArray(newSize); 
+    initializeArray(Array.from({ length: newSize }, () => Math.floor(Math.random() * 100) + 1));
   };
 
-  
+  const handleUserInputChange = (event) => {
+    setUserInput(event.target.value);
+  };
+
+  const handleSubmitUserInput = () => {
+    const inputArray = userInput
+      .split(',')
+      .map((str) => parseInt(str.trim(), 10))
+      .filter((num) => !isNaN(num));
+
+    if (inputArray.length > 0) {
+      initializeArray(inputArray);
+    } else {
+      alert("Invalid input! Please enter numbers separated by commas.");
+    }
+  };
+
   useEffect(() => {
     if (!isSorting) return;
 
     const insertionSortStep = () => {
       const newArr = [...arr];
-      
-      
+
       if (i < newArr.length) {
         if (j < i) {
           if (newArr[i] < newArr[j]) {
-            [newArr[i], newArr[j]] = [newArr[j], newArr[i]]; 
+            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
             setArr(newArr);
           }
           setJ(j + 1);
@@ -75,11 +89,13 @@ function InsertionSortVisualizer() {
           setJ(0);
         }
       } else {
-        clearTimeout(timeoutRef.current); 
+        setIsSorting(false);
+        setIsSorted(true);
+        clearTimeout(timeoutRef.current);
       }
 
       drawArray(newArr);
-      timeoutRef.current = setTimeout(insertionSortStep, sortDelay); 
+      timeoutRef.current = setTimeout(insertionSortStep, sortDelay);
     };
 
     timeoutRef.current = setTimeout(insertionSortStep, sortDelay);
@@ -87,30 +103,28 @@ function InsertionSortVisualizer() {
     return () => clearTimeout(timeoutRef.current);
   }, [arr, i, j, isSorting, sortDelay]);
 
-  
   useEffect(() => {
-    initializeArray(arraySize); 
+    initializeArray(Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1));
     if (autoStart) {
       startSorting();
     }
   }, [autoStart, arraySize]);
 
-  
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = '#FFF9C4';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Set the background color to a soft honey yellow or white
+    ctx.fillStyle = '#FFF9C4'; // Warm pale yellow for the canvas background
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    
     array.forEach((value, index) => {
-      if (index === i || index === j) {
-        ctx.fillStyle = '#FFD700';
+      if (isSorting && (index === i || index === j)) {
+        ctx.fillStyle = '#FFD700'; // Dark honey brown for the rectangles
       } else {
-        ctx.fillStyle = '#5a3019';
+        ctx.fillStyle = '#5a3019'; // Default color for other elements
       }
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
+      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 3, (canvas.width / array.length) - 2, value * 3);
     });
   };
 
@@ -121,23 +135,21 @@ function InsertionSortVisualizer() {
   return (
     <div className="visualizer-container">
       <div className="controls">
-        <div className="control-item">
-          <label>
-            Array Size: {arraySize}
-            <div className="slider-container">
-              <span className="slider-label">{5}</span>
-              <input
-                type="range"
-                value={arraySize}
-                onChange={handleArraySizeChange}
-                min="5"
-                max="50"
-              />
-              <span className="slider-label">{50}</span>
-            </div>
-          </label>
-        </div>
-    
+        <label>
+          Array Size: {arraySize}
+          <div className="slider-container">
+            <span className="slider-label">{5}</span>
+            <input
+              type="range"
+              value={arraySize}
+              onChange={(e) => setArraySize(Number(e.target.value))}
+              min="5"
+              max="50"
+            />
+            <span className="slider-label">{50}</span>
+          </div>
+        </label>
+        
         <label>
           Sorting Speed (ms): {sortDelay}
           <div className="slider-container">
@@ -153,20 +165,30 @@ function InsertionSortVisualizer() {
             <span className="slider-label">{1000}</span>
           </div>
         </label>
-    
-        <div className="control-item">
-          <label>
-            Auto-Start Sorting:
-            <input
-              type="checkbox"
-              checked={autoStart}
-              onChange={(e) => setAutoStart(e.target.checked)}
-            />
-          </label>
+        
+        <label>
+          Auto-Start Sorting:
+          <input
+            type="checkbox"
+            checked={autoStart}
+            onChange={(e) => setAutoStart(e.target.checked)}
+          />
+        </label>
+
+        {/* Input for custom array */}
+        <div>
+          <label>Custom Array (comma separated):</label>
+          <input
+            type="text"
+            value={userInput}
+            onChange={handleUserInputChange}
+            placeholder="Enter numbers separated by commas"
+          />
+          <button onClick={handleSubmitUserInput}>Submit</button>
         </div>
-    
+  
         <div className="control-button">
-          <button onClick={startSorting} disabled={isSorting}>
+          <button onClick={startSorting} disabled={isSorting || isSorted}>
             <img src={playIcon} alt="Play" className="icon" />
           </button>
           <button onClick={stopSorting} disabled={!isSorting}>
@@ -177,11 +199,8 @@ function InsertionSortVisualizer() {
           </button>
         </div>
       </div>
-    
-      <div className="canvas-container">
-        <canvas ref={canvasRef} width={500} height={300}></canvas>
-      </div>
-    
+      <canvas ref={canvasRef} width={500} height={300}></canvas>
+
       <p className="description">
         Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
       </p>

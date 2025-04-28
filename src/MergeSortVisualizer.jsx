@@ -14,6 +14,7 @@ function MergeSortVisualizer() {
   const animationFrameId = useRef(null);
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
+  const [customInput, setCustomInput] = useState(''); // Custom Input state
 
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
@@ -52,6 +53,26 @@ function MergeSortVisualizer() {
     const newSize = Number(event.target.value);
     setArraySize(newSize);
     initializeArray(newSize); 
+  };
+
+  const handleCustomInputChange = (event) => {
+    setCustomInput(event.target.value);
+  };
+
+  const handleCustomInputSubmit = () => {
+    const parsedArray = customInput
+      .split(',')
+      .map((item) => parseInt(item.trim(), 10))
+      .filter((item) => !isNaN(item));
+
+    if (parsedArray.length === 0) {
+      alert('Please enter a valid array of numbers.');
+    } else {
+      setArr(parsedArray);
+      setStep(0);
+      setAnimations([]);
+      drawArray(parsedArray);  // Redraw with the new array
+    }
   };
 
   const mergeSort = (array, animations) => {
@@ -147,7 +168,6 @@ function MergeSortVisualizer() {
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
-  
 
   useEffect(() => {
     drawArray(arr);
@@ -195,6 +215,19 @@ function MergeSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
+
+        <div className="control-item">
+          <label>
+            Custom Array (comma-separated):
+            <input
+              type="text"
+              value={customInput}
+              onChange={handleCustomInputChange}
+              placeholder="Enter numbers separated by commas"
+            />
+          </label>
+          <button onClick={handleCustomInputSubmit}>Submit</button>
+        </div>
 
         <div className="control-button">
           <button onClick={startSorting} disabled={isSorting}>

@@ -10,19 +10,21 @@ function SelectionSortVisualizer() {
   const [j, setJ] = useState(1);
   const [minIdx, setMinIdx] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
+  const [isSorted, setIsSorted] = useState(false);
   const [arraySize, setArraySize] = useState(15);
   const [sortDelay, setSortDelay] = useState(100); 
-  const [autoStart, setAutoStart] = useState(true); 
+  const [autoStart, setAutoStart] = useState(true);
+  const [userInput, setUserInput] = useState('');
   const canvasRef = useRef(null);
   const animationFrameId = useRef(null);
 
-  const initializeArray = (size = arraySize) => {
-    const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+  const initializeArray = (newArr) => {
     setArr(newArr);
     setI(0);
     setJ(1);
     setMinIdx(0);
-    drawArray(newArr); 
+    setIsSorted(false);
+    drawArray(newArr);
   };
 
   const shuffleArray = () => {
@@ -35,16 +37,41 @@ function SelectionSortVisualizer() {
     setI(0);
     setJ(1);
     setMinIdx(0);
-    drawArray(shuffledArr); 
+    setIsSorted(false);
+    drawArray(shuffledArr);
   };
 
   const startSorting = () => {
     setIsSorting(true);
+    setIsSorted(false);
   };
 
   const stopSorting = () => {
     setIsSorting(false);
-    cancelAnimationFrame(animationFrameId.current);
+    clearTimeout(animationFrameId.current);
+  };
+
+  const handleArraySizeChange = (event) => {
+    const newSize = Number(event.target.value);
+    setArraySize(newSize);
+    initializeArray(Array.from({ length: newSize }, () => Math.floor(Math.random() * 100) + 1));
+  };
+
+  const handleUserInputChange = (event) => {
+    setUserInput(event.target.value);
+  };
+
+  const handleSubmitUserInput = () => {
+    const inputArray = userInput
+      .split(',')
+      .map((str) => parseInt(str.trim(), 10))
+      .filter((num) => !isNaN(num));
+
+    if (inputArray.length > 0) {
+      initializeArray(inputArray);
+    } else {
+      alert("Invalid input! Please enter numbers separated by commas.");
+    }
   };
 
   useEffect(() => {
@@ -67,12 +94,13 @@ function SelectionSortVisualizer() {
           setMinIdx(i + 1);
         }
       } else {
-        cancelAnimationFrame(animationFrameId.current);
         setIsSorting(false);
+        setIsSorted(true);
+        clearTimeout(animationFrameId.current);
       }
 
       drawArray(newArr);
-      animationFrameId.current = setTimeout(selectionSortStep, sortDelay); 
+      animationFrameId.current = setTimeout(selectionSortStep, sortDelay);
     };
 
     animationFrameId.current = setTimeout(selectionSortStep, sortDelay);
@@ -92,19 +120,12 @@ function SelectionSortVisualizer() {
     array.forEach((value, index) => {
       // Highlight the minIdx element in Dark Honey Brown
       ctx.fillStyle = index === minIdx ? '#FFD700' : '#5a3019'; // Use Dark Honey Brown for others
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2); // Draw each array element
+      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 3, (canvas.width / array.length) - 2, value * 3); // Increased height for better visibility
     });
   };
-  
-  const handleArraySizeChange = (event) => {
-    const newSize = Number(event.target.value);
-    setArraySize(newSize);
-    initializeArray(newSize);
-  };
 
- 
   useEffect(() => {
-    initializeArray(arraySize); 
+    initializeArray(Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1));
     if (autoStart) {
       startSorting();
     }
@@ -116,8 +137,7 @@ function SelectionSortVisualizer() {
 
   return (
     <div className="visualizer-container">
-    <div className="controls">
-      <div className="control-item">
+      <div className="controls">
         <label>
           Array Size: {arraySize}
           <input
@@ -128,9 +148,7 @@ function SelectionSortVisualizer() {
             max="50"
           />
         </label>
-      </div>
-  
-      <div className="control-item">
+
         <label>
           Sorting Speed (ms): {sortDelay}
           <input
@@ -142,9 +160,7 @@ function SelectionSortVisualizer() {
             step="10"
           />
         </label>
-      </div>
-  
-      <div className="control-item">
+
         <label>
           Auto-Start Sorting:
           <input
@@ -153,28 +169,38 @@ function SelectionSortVisualizer() {
             onChange={(e) => setAutoStart(e.target.checked)}
           />
         </label>
+
+        {/* Input for custom array */}
+        <div>
+          <label>Custom Array (comma separated):</label>
+          <input
+            type="text"
+            value={userInput}
+            onChange={handleUserInputChange}
+            placeholder="Enter numbers separated by commas"
+          />
+          <button onClick={handleSubmitUserInput}>Submit</button>
+        </div>
+
+        <div className="control-button">
+          <button onClick={startSorting} disabled={isSorting || isSorted}>
+            <img src={playIcon} alt="Play" className="icon" />
+          </button>
+          <button onClick={stopSorting} disabled={!isSorting}>
+            <img src={pauseIcon} alt="Pause" className="icon" />
+          </button>
+          <button onClick={shuffleArray}>
+            <img src={shuffleIcon} alt="Shuffle" className="icon" />
+          </button>
+        </div>
       </div>
-  
-      <div className="control-button">
-        <button className="button" onClick={startSorting} disabled={isSorting}>
-          <img src={playIcon} alt="Play" className="icon" /> 
-        </button>
-        <button className="button" onClick={stopSorting} disabled={!isSorting}>
-          <img src={pauseIcon} alt="Pause" className="icon" />
-        </button>
-        <button className="button" onClick={shuffleArray}>
-          <img src={shuffleIcon} alt="Shuffle" className="icon" />
-        </button>
-      </div>
-    </div>
-  
-    <div className="canvas-container">
+
       <canvas ref={canvasRef} width={500} height={300}></canvas>
+
       <p className="description">
-        Selection Sort is an in-place comparison-based algorithm that repeatedly selects the smallest element from the unsorted part of the list and swaps it with the leftmost unsorted element. Its \( O(n^2) \) complexity makes it inefficient for large datasets.
+        Selection Sort is an in-place comparison-based algorithm that repeatedly selects the smallest element from the unsorted part of the list and swaps it with the leftmost unsorted element. Its <strong> \( O(n^2) \) </strong> complexity makes it inefficient for large datasets.
       </p>
     </div>
-  </div>
   );
 }
 
