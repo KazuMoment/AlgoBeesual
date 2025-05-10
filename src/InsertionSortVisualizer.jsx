@@ -3,6 +3,7 @@ import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
+import beeImage from './assets/bee.png'; // Import the bee image
 
 function InsertionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -114,17 +115,37 @@ function InsertionSortVisualizer() {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
-    // Set the background color to a soft honey yellow or white
-    ctx.fillStyle = '#FFF9C4'; // Warm pale yellow for the canvas background
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
+    ctx.fillStyle = '#FFF9C4'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
     
     array.forEach((value, index) => {
       if (isSorting && (index === i || index === j)) {
-        ctx.fillStyle = '#FFD700'; // Dark honey brown for the rectangles
+        ctx.fillStyle = '#FFD700'; 
       } else {
-        ctx.fillStyle = '#5a3019'; // Default color for other elements
+        ctx.fillStyle = '#5a3019'; 
       }
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 3, (canvas.width / array.length) - 2, value * 3);
+      const barWidth = canvas.width / array.length;
+      const barHeight = value * 2.6;
+      const x = index * barWidth;
+      const y = canvas.height - barHeight;
+
+      ctx.fillRect(x, y, barWidth - 2, barHeight);
+
+      if (isSorting && index === j && i !== j) { 
+        const beeX = x + (barWidth - 40) / 2;
+        const beeY = y - 50; 
+        const beeImageElement = new Image();
+        beeImageElement.src = beeImage; 
+
+        // Prevent multiple bees by ensuring the image is drawn only once
+        if (!beeImageElement.complete) {
+          beeImageElement.onload = () => {
+            ctx.drawImage(beeImageElement, beeX, beeY, 35, 35);
+          };
+        } else {
+          ctx.drawImage(beeImageElement, beeX, beeY, 35, 35); 
+        }
+      }
     });
   };
 

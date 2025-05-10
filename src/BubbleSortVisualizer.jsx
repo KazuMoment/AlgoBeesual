@@ -3,6 +3,7 @@ import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
+import beeImage from './assets/bee.png'; 
 
 function BubbleSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -13,7 +14,7 @@ function BubbleSortVisualizer() {
   const [arraySize, setArraySize] = useState(15);
   const [sortDelay, setSortDelay] = useState(100);
   const [autoStart, setAutoStart] = useState(true);
-  const [userInput, setUserInput] = useState(''); // State for user input
+  const [userInput, setUserInput] = useState(''); 
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
 
@@ -110,21 +111,41 @@ function BubbleSortVisualizer() {
     }
   }, [autoStart, arraySize]);
 
+  const beeImageElement = new Image();
+  beeImageElement.src = beeImage;
+
   const drawArray = (array) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    
-    // Set the background color to a soft honey yellow or white
-    ctx.fillStyle = '#FFF9C4'; // Warm pale yellow for the canvas background
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas
-    
+
+
+    ctx.fillStyle = '#FFF9C4'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
+
     array.forEach((value, index) => {
       if (isSorting && (index === j || index === j + 1)) {
-        ctx.fillStyle = '#FFD700'; // Dark honey brown for the rectangles
+        ctx.fillStyle = '#FFD700';
       } else {
-        ctx.fillStyle = '#5a3019'; // Default color for other elements
+        ctx.fillStyle = '#5a3019'; 
       }
-      ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 3, (canvas.width / array.length) - 2, value * 3);
+      const barWidth = canvas.width / array.length;
+      const barHeight = value * 2.6;
+      const x = index * barWidth;
+      const y = canvas.height - barHeight;
+
+     
+      ctx.fillRect(x, y, barWidth - 2, barHeight);
+
+    
+      if (isSorting && (index === j || index === j + 1)) {
+        const smallerBarIndex = arr[j] < arr[j + 1] ? j : j + 1; 
+        if (index === smallerBarIndex) {
+          const otherBarHeight = arr[j] < arr[j + 1] ? arr[j + 1] * 2.6 : arr[j] * 2.6; 
+          const beeX = x + (barWidth - 40) / 2; 
+          const beeY = canvas.height - (barHeight + otherBarHeight) / 2 - 60; 
+          ctx.drawImage(beeImageElement, beeX, beeY, 35, 35); 
+        }
+      }
     });
   };
   
@@ -134,7 +155,7 @@ function BubbleSortVisualizer() {
   }, [arr]);
 
   return (
-    <div className="visualizer-container">
+    <div className="visualizer-container" style={{ position: 'relative' }}>
       <div className="controls">
         <label>
           Array Size: {arraySize}

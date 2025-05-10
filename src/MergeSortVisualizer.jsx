@@ -14,7 +14,7 @@ function MergeSortVisualizer() {
   const animationFrameId = useRef(null);
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
-  const [customInput, setCustomInput] = useState(''); // Custom Input state
+  const [customInput, setCustomInput] = useState(''); 
 
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
@@ -25,11 +25,13 @@ function MergeSortVisualizer() {
   };
 
   const startSorting = () => {
+    if (isSorting) return; 
+
     setIsSorting(true);
     const newAnimations = [];
     mergeSort([...arr], newAnimations);
     setAnimations(newAnimations);
-    setStep(0); 
+    setStep(0);
   };
 
   const stopSorting = () => {
@@ -71,7 +73,7 @@ function MergeSortVisualizer() {
       setArr(parsedArray);
       setStep(0);
       setAnimations([]);
-      drawArray(parsedArray);  // Redraw with the new array
+      drawArray(parsedArray);  
     }
   };
 
@@ -143,28 +145,24 @@ function MergeSortVisualizer() {
 
   useEffect(() => {
     initializeArray(arraySize); 
-    if (autoStart) {
-      startSorting();
-    }
-  }, [autoStart, arraySize]);
+    setIsSorting(false); 
+  }, [arraySize]);
 
   const drawArray = (array, leftIdx = null, rightIdx = null) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
-    // Set the background color
-    ctx.fillStyle = '#FFF9C4'; // Set canvas background color (light yellow)
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the entire canvas with the background color
+    ctx.fillStyle = '#FFF9C4'; 
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
     
-    // Draw the array elements
+
     array.forEach((value, index) => {
       if (index === leftIdx || index === rightIdx) {
-        ctx.fillStyle = '#FFD700'; // Golden Yellow for comparisons
+        ctx.fillStyle = '#FFD700'; 
       } else {
-        ctx.fillStyle = '#5a3019'; // Dark Honey Brown for normal elements
+        ctx.fillStyle = '#5a3019'; 
       }
       
-      // Draw the rectangle representing the array element
       ctx.fillRect(index * (canvas.width / array.length), canvas.height - value * 2, (canvas.width / array.length) - 2, value * 2);
     });
   };
