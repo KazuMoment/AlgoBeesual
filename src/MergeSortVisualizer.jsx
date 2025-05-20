@@ -135,7 +135,56 @@ function MergeSortVisualizer() {
         setIsSorting(false);
       }
 
-      animationFrameId.current = setTimeout(animate, sortDelay);
+      animationFrameId.current = setTimeout(animate, sortDelay);const mergeSort = (array, animations) => {
+  if (array.length <= 1) return array;
+
+  const mid = Math.floor(array.length / 2);
+  const left = array.slice(0, mid);
+  const right = array.slice(mid);
+
+  animations.push({
+    action: 'split',
+    array: [...array]
+  });
+
+  const sortedLeft = mergeSort(left, animations);
+  const sortedRight = mergeSort(right, animations);
+
+  return merge(sortedLeft, sortedRight, animations);
+};
+
+const merge = (left, right, animations) => {
+  let result = [];
+  let leftIndex = 0;
+  let rightIndex = 0;
+
+  while (leftIndex < left.length && rightIndex < right.length) {
+    animations.push({
+      action: 'compare',
+      leftValue: left[leftIndex],
+      rightValue: right[rightIndex],
+      result: [...result]
+    });
+
+    if (left[leftIndex] < right[rightIndex]) {
+      result.push(left[leftIndex]);
+      leftIndex++;
+    } else {
+      result.push(right[rightIndex]);
+      rightIndex++;
+    }
+  }
+
+  result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+
+  animations.push({
+    action: 'merge',
+    result: [...result]
+  });
+
+  return result;
+
+
     };
 
     animationFrameId.current = setTimeout(animate, sortDelay);

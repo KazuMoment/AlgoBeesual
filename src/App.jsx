@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { Drawer, Button, List, ListItem, ListItemText, AppBar, Toolbar, Typography } from '@mui/material';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
+import {
+  Drawer,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  AppBar,
+  Toolbar,
+  Typography,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import BubbleSortVisualizer from './BubbleSortVisualizer';
 import InsertionSortVisualizer from './InsertionSortVisualizer';
@@ -8,20 +23,23 @@ import SelectionSortVisualizer from './SelectionSortVisualizer';
 import Home from './Home';
 import './App.css';
 
-function App() {
+// -------------------------------------------
+// Navigation + Layout Component
+// -------------------------------------------
+function NavigationWrapper() {
   const [open, setOpen] = useState(false);
-  const [selectedAlgorithm, setSelectedAlgorithm] = useState('home');
+  const navigate = useNavigate();
 
   const toggleDrawer = () => setOpen(!open);
 
-  const handleSelection = (algorithm) => {
-    console.log("Selected Algorithm: ", algorithm);
-    setSelectedAlgorithm(algorithm);
+  const handleSelection = (route) => {
+    navigate(route);
     setOpen(false);
   };
 
   return (
-    <div>
+    <>
+      {/* App Bar */}
       <AppBar
         position="fixed"
         sx={{
@@ -30,7 +48,13 @@ function App() {
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)',
         }}
       >
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', padding: '0 20px' }}>
+        <Toolbar
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '0 20px',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Button
               color="inherit"
@@ -39,18 +63,14 @@ function App() {
                 minWidth: 0,
                 padding: 0,
                 marginRight: '10px',
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                },
+                '&:hover': { backgroundColor: 'transparent' },
               }}
             >
               <MenuIcon
                 sx={{
                   fontSize: '2rem',
                   color: '#FFFBE6',
-                  '&:hover': {
-                    color: '#CC9918',
-                  },
+                  '&:hover': { color: '#CC9918' },
                 }}
               />
             </Button>
@@ -60,7 +80,6 @@ function App() {
                 fontFamily: 'Poppins, sans-serif',
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
-                color: '#FFFBE6',
                 letterSpacing: '1px',
               }}
             >
@@ -70,22 +89,7 @@ function App() {
         </Toolbar>
       </AppBar>
 
-      <div style={{
-        marginTop: '80px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 'calc(100vh - 80px)',
-        padding: '20px',
-      }}>
-        {selectedAlgorithm === 'bubbleSort' && <BubbleSortVisualizer />}
-        {selectedAlgorithm === 'insertionSort' && <InsertionSortVisualizer />}
-        {selectedAlgorithm === 'mergeSort' && <MergeSortVisualizer />}
-        {selectedAlgorithm === 'selectionSort' && <SelectionSortVisualizer />}
-        {selectedAlgorithm === 'home' && <Home />}
-      </div>
-
+      {/* Side Drawer */}
       <Drawer
         anchor="left"
         open={open}
@@ -105,7 +109,6 @@ function App() {
         }}
       >
         <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          {/* Drawer Header */}
           <div
             style={{
               display: 'flex',
@@ -117,16 +120,10 @@ function App() {
               borderBottom: '2px solid #FFD54F',
             }}
           >
-            {/* 🐝 Logo */}
             <img
               src="src/assets/logo.png"
               alt="Logo"
-              style={{
-                width: '80px',
-                height: '80px',
-                objectFit: 'contain',
-                marginBottom: '10px',
-              }}
+              style={{ width: '80px', height: '80px', objectFit: 'contain', marginBottom: '10px' }}
             />
             <Typography
               variant="h6"
@@ -142,19 +139,19 @@ function App() {
             </Typography>
           </div>
 
-          {/* Drawer Items */}
+          {/* Navigation List */}
           <List sx={{ padding: 0 }}>
             {[
-              { label: 'Home', key: 'home' },
-              { label: 'Bubble Sort', key: 'bubbleSort' },
-              { label: 'Merge Sort', key: 'mergeSort' },
-              { label: 'Selection Sort', key: 'selectionSort' },
-              { label: 'Insertion Sort', key: 'insertionSort' },
+              { label: 'Home', path: '/' },
+              { label: 'Bubble Sort', path: '/bubble-sort' },
+              { label: 'Insertion Sort', path: '/insertion-sort' },
+              { label: 'Merge Sort', path: '/merge-sort' },
+              { label: 'Selection Sort', path: '/selection-sort' },
             ].map((item, index) => (
               <ListItem
                 key={index}
                 button
-                onClick={() => handleSelection(item.key)}
+                onClick={() => handleSelection(item.path)}
                 sx={{
                   marginBottom: '10px',
                   padding: '12px',
@@ -182,7 +179,37 @@ function App() {
           </List>
         </div>
       </Drawer>
-    </div>
+
+      {/* Routed Views */}
+      <div
+        style={{
+          marginTop: '80px',
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'center',
+          minHeight: 'calc(100vh - 80px)',
+        }}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/bubble-sort" element={<BubbleSortVisualizer />} />
+          <Route path="/insertion-sort" element={<InsertionSortVisualizer />} />
+          <Route path="/merge-sort" element={<MergeSortVisualizer />} />
+          <Route path="/selection-sort" element={<SelectionSortVisualizer />} />
+        </Routes>
+      </div>
+    </>
+  );
+}
+
+// -------------------------------------------
+// Root App Component with Router
+// -------------------------------------------
+function App() {
+  return (
+    <Router>
+      <NavigationWrapper />
+    </Router>
   );
 }
 

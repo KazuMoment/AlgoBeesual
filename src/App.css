@@ -2,246 +2,332 @@
 
 /* General Styles */
 body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    height: 100vh;
-    width: 100%;
-    background: var(--background-image, url('assets/bg ab.svg')) repeat center center;
-    background-size: cover;
-    font-family: "Quicksand", sans-serif;
-    color: #5a3019;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-attachment: fixed;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  width: 100%;
+  background: var(--background-image, url('assets/bg ab.svg')) repeat center center;
+  background-size: cover;
+  font-family: "Quicksand", sans-serif;
+  color: #5a3019;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-attachment: fixed;
+  box-sizing: border-box;
 }
 
-.appbar-text {
-    font-family: 'Poppins', sans-serif; /* Or any other font you prefer */
-    font-size: 2rem;
-    font-weight: 600;
-    text-align: center;
-    color: #5a3019; /* Dark Honey Brown */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  
-
+/* Root Layout */
 #root {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative; /* Enable positioning of child elements */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
 }
 
 /* AppBar Styles */
 .MuiAppBar-root {
-    background-color: #0C2626 !important;
-    color: #CC9918 !important;
-    border-bottom: 2px solid #CC9918;
+  background-color: #0C2626 !important;
+  color: #CC9918 !important;
+  border-bottom: 2px solid #CC9918;
+  padding: 0 10px;
 }
 
 .MuiTypography-root {
-    font-size: 1.2rem;
-    font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* App Bar Text */
+.appbar-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  color: #5a3019;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* Drawer Styles */
 .MuiDrawer-paper {
-    background-color: #ffc248 !important;
-    color: #5a3019;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-    padding-top: 20px;
-    width: 250px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #ffc248 !important;
+  color: #5a3019;
+  border-top-right-radius: 40px;
+  border-bottom-right-radius: 40px;
+  padding-top: 20px;
+  width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Drawer Header */
 .drawer-header {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 20px;
-    color: black;
-    text-transform: uppercase;
-    font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 20px;
+  color: black;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Main Content Styles */
+.drawer-header img {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 50%;
+  background-color: white;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.drawer-item {
+  margin: 10px auto;
+  width: 80%;
+  padding: 12px;
+  background-color: #DDA632;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+}
+
+.drawer-item:hover {
+  background-color: #E5B549;
+  transform: scale(1.05);
+}
+
+/* Main Content */
 .main-content {
-    margin: 20px auto;
-    padding: 20px;
-    width: 80%;
-    max-width: 600px;
-    background: rgba(255, 204, 102, 0.8);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding-top: 120px;
-    transition: padding-top 0.2s ease-in-out;
+  margin: 20px auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 600px;
+  background: rgba(255, 204, 102, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding-top: 120px;
+  transition: padding-top 0.2s ease-in-out;
 }
 
 /* Visualizer Container */
 .visualizer-container {
-    background: transparent;
-    border-radius: 10px;
-    padding: 20px;
-    width: 100%;
-    max-width: 1200px;
-    margin-top: 80px; /* Ensure space is added above for controls */
-    height: 450px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Controls */
-.controls {
-    position: fixed; /* Position the controls at the top-right */
-    top: 80px; /* Adjust the distance from the top */
-    right: 20px; /* Adjust the distance from the right */
-    background-color: rgba(255, 255, 255, 0.8); /* Light background for controls */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Soft shadow for the controls */
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 15px; /* Add spacing between control items */
-}
-
-.control-button {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.control-button button {
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.control-button button img {
-    width: 24px;
-    height: 24px;
-}
-
-button {
-    border-radius: 10px;
-}
-
-.control-icon {
-    font-size: 1.5rem;
-    color: #5A3019;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.control-icon:hover {
-    color: #CC9918;
+  background: transparent;
+  border-radius: 10px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 80px;
+  height: 450px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Sorting Animation Box */
 .sorting-animation-box {
-    margin: 0 auto;
-    padding: 20px;
-    background: transparent;
-    border-radius: 20px;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    background-image: linear-gradient(45deg, rgba(255, 204, 102, 0.8), rgba(255, 178, 51, 0.6));
+  margin: 0 auto;
+  padding: 20px;
+  background: transparent;
+  border-radius: 20px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-image: linear-gradient(45deg, rgba(255, 204, 102, 0.8), rgba(255, 178, 51, 0.6));
+}
+
+/* Controls */
+.controls {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.control-button {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.control-button button {
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.control-button button img {
+  width: 24px;
+  height: 24px;
+}
+
+.control-icon {
+  font-size: 1.5rem;
+  color: #5A3019;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.control-icon:hover {
+  color: #CC9918;
 }
 
 /* Description */
 .description {
-    font-size: 1rem;
-    color: #5a3019;
-    text-align: center;
-    margin-top: 20px;
-    max-width: 600px;
+  font-size: 1rem;
+  color: #5a3019;
+  text-align: center;
+  margin-top: 20px;
+  max-width: 600px;
 }
 
-/* Drawer Header */
-.drawer-header {
-    font-size: 1.5rem;
-    text-align: center;
-    margin-bottom: 20px;
-    color: black;
-    text-transform: uppercase;
-    font-weight: bold;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Quiz Styles */
+.quiz-container {
+  background-color: #fffde7;
+  padding: 72px;
+  border-radius: 16px;
+  margin-top: 0px;
+  text-align: center;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: Arial, sans-serif;
 }
 
-.drawer-header img {
-    width: 100px;
-    height: auto;
-    margin-bottom: 10px;
-    border-radius: 50%;
-    background-color: white;
-    padding: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.quiz-container h2 {
+  margin-bottom: 0px;
+  color: #5a3019;
 }
 
-
-/* Drawer Item Styles */
-.drawer-item {
-    margin: 10px auto;
-    width: 80%;
-    padding: 12px;
-    background-color: #DDA632;
-    color: white;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+.quiz-container p {
+  font-size: 20px;
+  margin: 0;
+  color: #333;
 }
 
-.drawer-item:hover {
-    background-color: #E5B549;
-    transform: scale(1.05);
+.quiz-container p:last-of-type {
+  font-weight: bold;
+  margin-top: 0px;
 }
+
+.quiz-container button,
+.quiz-button {
+  margin-top: 10px;
+  padding: 20px 30px;
+  font-size: 16px;
+  background-color: #aed581;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.quiz-container button:hover,
+.quiz-button:hover {
+  background-color: #9ccc65;
+}
+
+.quiz-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Answer Options */
+.options button,
+.quiz-options button {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #fff176;
+  border: 2px solid #fbc02d;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+}
+
+.options button:hover:enabled,
+.quiz-options button:hover {
+  background-color: #fdd835;
+  transform: scale(1.02);
+}
+
+.options button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Individual Option Box */
+.quiz {
+  background-color: #fff3cd;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px #ccc;
+}
+
+.options {
+  list-style: none;
+  padding: 0;
+}
+
+.option {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #ffeeba;
+  cursor: pointer;
+  border-radius: 4px;
+  border: 1px solid #f0ad4e;
+}
+
+.option:hover {
+  background-color: #ffd77a;
+}
+
+/* Canvas Container */
 .canvas-container {
-    display: flex;
-    justify-content: center; /* Center canvas horizontally */
-    align-items: center; /* Center canvas vertically */
-    flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .MuiTypography-root {
+    font-size: 1rem;
   }
 
-/* Responsive Styling */
-@media (max-width: 768px) {
-    .MuiAppBar-root {
-        padding: 0 10px;
-    }
+  .drawer-item {
+    font-size: 0.9rem;
+    padding: 8px;
+  }
 
-    .MuiTypography-root {
-        font-size: 1rem;
-    }
+  .sorting-header {
+    font-size: 1.5rem;
+  }
 
-    .drawer-item {
-        font-size: 0.9rem;
-        padding: 8px;
-    }
+  .control-button {
+    font-size: 1rem;
+    padding: 8px 15px;
+  }
 
-    .sorting-header {
-        font-size: 1.5rem;
-    }
-
-    .control-button {
-        font-size: 1rem;
-        padding: 8px 15px;
-    }
-
-    .sorting-animation-box {
-        height: 250px;
-    }
+  .sorting-animation-box {
+    height: 250px;
+  }
 }
