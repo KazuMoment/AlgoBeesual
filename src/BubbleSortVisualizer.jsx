@@ -154,9 +154,9 @@ function BubbleSortVisualizer() {
       alert('✅ Quiz Passed! You unlocked the next algorithms.');
       setQuizPassed(true);
     } else {
-      alert('❌ You need at least 8/10 to pass.');
+      alert('❌ You need at least 8/10 to pass. Try again!');
+      setShowQuiz(false);
     }
-    setShowQuiz(false);
   };
 
   return (
@@ -238,8 +238,22 @@ function BubbleSortVisualizer() {
       </p>
 
       {isSorted && !quizPassed && !showQuiz && (
-        <button className="quiz-button" onClick={() => setShowQuiz(true)}>
-          Go to Test
+        <button 
+          className="quiz-button" 
+          onClick={() => setShowQuiz(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            margin: '20px auto',
+            display: 'block'
+          }}
+        >
+          Go to Test (Unlock Next Algorithm)
         </button>
       )}
 
@@ -250,9 +264,33 @@ function BubbleSortVisualizer() {
       )}
 
       {quizPassed && (
-        <div className="unlocked">
+        <div 
+          className="unlocked" 
+          style={{
+            textAlign: 'center',
+            margin: '20px 0',
+            padding: '15px',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '5px'
+          }}
+        >
           <h3>✅ Merge Sort unlocked!</h3>
-          <button onClick={() => navigate('/merge-sort')}>Go to Merge Sort</button>
+          <p>You scored {score}/10 on the quiz</p>
+          <button 
+            onClick={() => navigate('/merge-sort')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2196F3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginTop: '10px'
+            }}
+          >
+            Go to Merge Sort
+          </button>
         </div>
       )}
     </div>

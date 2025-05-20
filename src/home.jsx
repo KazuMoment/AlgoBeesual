@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import logo from './assets/logo.png'; // Ensure this path is correct
+import logo from './assets/logo.png';
 
 function Home() {
   return (
@@ -13,14 +13,16 @@ function Home() {
         maxWidth: '1400px',
         margin: '0 auto',
         flexWrap: 'wrap',
+        minHeight: '100vh', // Ensure container takes full viewport height
       }}
     >
-      {/* Logo aligned like in the red box position */}
+      {/* Logo container - adjusted for vertical alignment */}
       <div
         style={{
           flex: '0 0 auto',
-          position: 'relative',
           marginRight: '50px',
+          alignSelf: 'center', // Vertically center with content
+          marginTop: '150px',  // Push both logo and content down
         }}
       >
         <img
@@ -29,18 +31,18 @@ function Home() {
           style={{
             width: '280px',
             height: 'auto',
-            marginTop: '100px',     // Push it downward
-            marginLeft: '40px',     // Push it to the right
+            marginLeft: '40px',
           }}
         />
       </div>
 
-      {/* Text section */}
+      {/* Text section - moved down */}
       <div
         style={{
           flex: '1',
           textAlign: 'left',
-          minWidth: '300px',
+          minWidth: '0px',
+          marginTop: '200px', // Matches logo's marginTop
         }}
       >
         <h1
@@ -48,7 +50,7 @@ function Home() {
             fontFamily: 'Quicksand, sans-serif',
             color: '#5a3019',
             fontSize: '3rem',
-            marginBottom: '20px',
+            marginBottom: '0px',
           }}
         >
           Welcome to AlgoBeesual!
@@ -59,7 +61,7 @@ function Home() {
             fontFamily: 'Quicksand, sans-serif',
             color: '#5a3019',
             fontSize: '1.3rem',
-            marginBottom: '20px',
+            marginBottom: '10px',
           }}
         >
           Visualize sorting algorithms in action. Learn how algorithms like Bubble Sort, Merge Sort, and more work through interactive animations.

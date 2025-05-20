@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
+import MergeSortQuiz from './MergeSortQuiz ';
 
 function MergeSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -15,6 +17,11 @@ function MergeSortVisualizer() {
   const [step, setStep] = useState(0);
   const [animations, setAnimations] = useState([]);
   const [customInput, setCustomInput] = useState(''); 
+  const [isSorted, setIsSorted] = useState(false);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizPassed, setQuizPassed] = useState(false);
+  const [score, setScore] = useState(0);
+  const navigate = useNavigate();
 
   const initializeArray = (size = arraySize) => {
     const newArr = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
@@ -84,6 +91,11 @@ function MergeSortVisualizer() {
     const left = array.slice(0, mid);
     const right = array.slice(mid);
 
+    animations.push({
+      action: 'split',
+      array: [...array]
+    });
+
     const sortedLeft = mergeSort(left, animations);
     const sortedRight = mergeSort(right, animations);
 
@@ -97,9 +109,10 @@ function MergeSortVisualizer() {
 
     while (leftIndex < left.length && rightIndex < right.length) {
       animations.push({
-        leftIdx: leftIndex,
-        rightIdx: rightIndex,
-        result: [...result, left[leftIndex], right[rightIndex]]
+        action: 'compare',
+        leftValue: left[leftIndex],
+        rightValue: right[rightIndex],
+        result: [...result]
       });
 
       if (left[leftIndex] < right[rightIndex]) {
@@ -112,9 +125,9 @@ function MergeSortVisualizer() {
     }
 
     result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+
     animations.push({
-      leftIdx: -1,
-      rightIdx: -1,
+      action: 'merge',
       result: [...result]
     });
 
@@ -126,65 +139,17 @@ function MergeSortVisualizer() {
 
     const animate = () => {
       if (step < animations.length) {
-        const { leftIdx, rightIdx, result } = animations[step];
-        setArr(result); 
-        drawArray(result, leftIdx, rightIdx); 
+        const currentAnimation = animations[step];
+        if (currentAnimation.action === 'merge') {
+          setArr(currentAnimation.result);
+        }
+        drawArray(currentAnimation.array || currentAnimation.result); 
         setStep((prevStep) => prevStep + 1); 
+        animationFrameId.current = setTimeout(animate, sortDelay);
       } else {
-        cancelAnimationFrame(animationFrameId.current); 
         setIsSorting(false);
+        setIsSorted(true);
       }
-
-      animationFrameId.current = setTimeout(animate, sortDelay);const mergeSort = (array, animations) => {
-  if (array.length <= 1) return array;
-
-  const mid = Math.floor(array.length / 2);
-  const left = array.slice(0, mid);
-  const right = array.slice(mid);
-
-  animations.push({
-    action: 'split',
-    array: [...array]
-  });
-
-  const sortedLeft = mergeSort(left, animations);
-  const sortedRight = mergeSort(right, animations);
-
-  return merge(sortedLeft, sortedRight, animations);
-};
-
-const merge = (left, right, animations) => {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-
-  while (leftIndex < left.length && rightIndex < right.length) {
-    animations.push({
-      action: 'compare',
-      leftValue: left[leftIndex],
-      rightValue: right[rightIndex],
-      result: [...result]
-    });
-
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
-    }
-  }
-
-  result = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
-
-  animations.push({
-    action: 'merge',
-    result: [...result]
-  });
-
-  return result;
-
-
     };
 
     animationFrameId.current = setTimeout(animate, sortDelay);
@@ -219,6 +184,17 @@ const merge = (left, right, animations) => {
   useEffect(() => {
     drawArray(arr);
   }, [arr]);
+
+  const handleQuizComplete = (userScore) => {
+    setScore(userScore);
+    if (userScore >= 8) {
+      alert('✅ Quiz Passed! You unlocked the next algorithm.');
+      setQuizPassed(true);
+    } else {
+      alert('❌ You need at least 8/10 to pass. Try again!');
+      setShowQuiz(false);
+    }
+  };
 
   return (
     <div className="visualizer-container">
@@ -295,6 +271,63 @@ const merge = (left, right, animations) => {
         splitting the array into smaller subarrays, sorting them, and then merging them back together.
         The time complexity is O(n log n), making it suitable for larger datasets.
       </p>
+
+      {isSorted && !quizPassed && !showQuiz && (
+        <button 
+          className="quiz-button" 
+          onClick={() => setShowQuiz(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            margin: '20px auto',
+            display: 'block'
+          }}
+        >
+          Go to Test (Unlock Next Algorithm)
+        </button>
+      )}
+
+      {showQuiz && (
+        <div className="quiz-container">
+          <MergeSortQuiz onComplete={handleQuizComplete} />
+        </div>
+      )}
+
+      {quizPassed && (
+        <div 
+          className="unlocked" 
+          style={{
+            textAlign: 'center',
+            margin: '20px 0',
+            padding: '15px',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '5px'
+          }}
+        >
+          <h3>✅ Selection Sort unlocked!</h3>
+          <p>You scored {score}/10 on the quiz</p>
+          <button 
+            onClick={() => navigate('/selection-sort')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2196F3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginTop: '10px'
+            }}
+          >
+            Go to Selection Sort
+          </button>
+        </div>
+      )}
     </div>
   );
 }

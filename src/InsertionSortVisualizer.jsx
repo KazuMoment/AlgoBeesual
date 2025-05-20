@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import playIcon from './assets/play icon.png';
 import pauseIcon from './assets/stop icon.png';
 import shuffleIcon from './assets/shuffle w honey icon.png';
-import beeImage from './assets/bee.png'; // Import the bee image
+import beeImage from './assets/bee.png';
+import InsertionSortQuiz from './InsertionSortQuiz';
 
 function InsertionSortVisualizer() {
   const [arr, setArr] = useState([]);
@@ -14,9 +16,13 @@ function InsertionSortVisualizer() {
   const [arraySize, setArraySize] = useState(15);
   const [sortDelay, setSortDelay] = useState(100);
   const [autoStart, setAutoStart] = useState(true);
-  const [userInput, setUserInput] = useState(''); // State for user input
+  const [userInput, setUserInput] = useState('');
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizPassed, setQuizPassed] = useState(false);
+  const [score, setScore] = useState(0);
   const canvasRef = useRef(null);
   const timeoutRef = useRef(null);
+  const navigate = useNavigate();
 
   const initializeArray = (newArr) => {
     setArr(newArr);
@@ -42,11 +48,7 @@ function InsertionSortVisualizer() {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledArr[i], shuffledArr[j]] = [shuffledArr[j], shuffledArr[i]];
     }
-    setArr(shuffledArr);
-    setI(1);
-    setJ(0);
-    setIsSorted(false);
-    drawArray(shuffledArr);
+    initializeArray(shuffledArr);
   };
 
   const handleArraySizeChange = (event) => {
@@ -137,7 +139,6 @@ function InsertionSortVisualizer() {
         const beeImageElement = new Image();
         beeImageElement.src = beeImage; 
 
-        // Prevent multiple bees by ensuring the image is drawn only once
         if (!beeImageElement.complete) {
           beeImageElement.onload = () => {
             ctx.drawImage(beeImageElement, beeX, beeY, 35, 35);
@@ -153,8 +154,21 @@ function InsertionSortVisualizer() {
     drawArray(arr);
   }, [arr]);
 
+  const handleQuizComplete = (userScore) => {
+    setScore(userScore);
+    if (userScore >= 8) {
+      alert('✅ Quiz Passed! You unlocked the next algorithm.');
+      setQuizPassed(true);
+    } else {
+      alert('❌ You need at least 8/10 to pass. Try again!');
+      setShowQuiz(false);
+    }
+  };
+
   return (
-    <div className="visualizer-container">
+    <div className="visualizer-container" style={{ marginTop: '80px' }}>
+      <h2 style={{ textAlign: 'center' }}>Insertion Sort Visualizer</h2>
+
       <div className="controls">
         <label>
           Array Size: {arraySize}
@@ -163,7 +177,7 @@ function InsertionSortVisualizer() {
             <input
               type="range"
               value={arraySize}
-              onChange={(e) => setArraySize(Number(e.target.value))}
+              onChange={handleArraySizeChange}
               min="5"
               max="50"
             />
@@ -196,7 +210,6 @@ function InsertionSortVisualizer() {
           />
         </label>
 
-        {/* Input for custom array */}
         <div>
           <label>Custom Array (comma separated):</label>
           <input
@@ -225,6 +238,63 @@ function InsertionSortVisualizer() {
       <p className="description">
         Insertion Sort works by iterating through the array, and at each step, the current element is compared to the previous ones. The element is inserted into its correct position in the sorted part of the array. Its time complexity is O(n^2) for the worst case, making it less efficient for large datasets.
       </p>
+
+      {isSorted && !quizPassed && !showQuiz && (
+        <button 
+          className="quiz-button" 
+          onClick={() => setShowQuiz(true)}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            margin: '20px auto',
+            display: 'block'
+          }}
+        >
+          Go to Test (Unlock Next Algorithm)
+        </button>
+      )}
+
+      {showQuiz && (
+        <div className="quiz-container">
+          <InsertionSortQuiz onComplete={handleQuizComplete} />
+        </div>
+      )}
+
+      {quizPassed && (
+        <div 
+          className="unlocked" 
+          style={{
+            textAlign: 'center',
+            margin: '20px 0',
+            padding: '15px',
+            backgroundColor: '#e8f5e9',
+            borderRadius: '5px'
+          }}
+        >
+          <h3>✅ Merge Sort unlocked!</h3>
+          <p>You scored {score}/10 on the quiz</p>
+          <button 
+            onClick={() => navigate('/merge-sort')}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#2196F3',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              fontSize: '16px',
+              marginTop: '10px'
+            }}
+          >
+            Go to Merge Sort
+          </button>
+        </div>
+      )}
     </div>
   );
 }

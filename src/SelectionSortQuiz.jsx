@@ -1,5 +1,5 @@
 // SelectionSortQuiz.js
-import  { useState } from 'react';
+import { useState } from 'react';
 
 const questions = [
   {
@@ -57,24 +57,123 @@ const questions = [
 function SelectionSortQuiz({ onComplete }) {
   const [current, setCurrent] = useState(0);
   const [score, setScore] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState(Array(questions.length).fill(null));
 
-  const handleAnswer = (index) => {
-    if (index === questions[current].answer) setScore(score + 1);
-    const next = current + 1;
-    if (next < questions.length) {
-      setCurrent(next);
+  const handleOptionClick = (optionIdx) => {
+    const newAnswers = [...selectedAnswers];
+    newAnswers[current] = optionIdx;
+    setSelectedAnswers(newAnswers);
+  };
+
+  const handleNext = () => {
+    if (current < questions.length - 1) {
+      setCurrent(current + 1);
     } else {
-      onComplete(score + (index === questions[current].answer ? 1 : 0));
+      const finalScore = selectedAnswers.reduce(
+        (acc, answer, idx) => acc + (answer === questions[idx].answer ? 1 : 0),
+        0
+      );
+      setScore(finalScore);
+      setShowResults(true);
+      onComplete(finalScore);
     }
   };
 
+  const handleExit = () => {
+    onComplete(0);
+  };
+
   return (
-    <div className="quiz">
-      <h3>Selection Sort Quiz</h3>
-      <p>{questions[current].question}</p>
-      {questions[current].options.map((opt, i) => (
-        <button key={i} onClick={() => handleAnswer(i)}>{opt}</button>
-      ))}
+    <div style={{ padding: '2rem', background: '#f9f9f9', minHeight: '100vh' }}>
+      <div
+        style={{
+          maxWidth: '400px',
+          margin: '0 auto',
+          backgroundColor: '#fff',
+          borderRadius: '10px',
+          padding: '2rem',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+        }}
+      >
+        {showResults ? (
+          <h3 style={{ textAlign: 'center' }}>Thank you for completing the test!</h3>
+        ) : (
+          <>
+            <h4 style={{ marginBottom: '1rem' }}>
+              Question {current + 1} of {questions.length}
+            </h4>
+            <p style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>
+              {questions[current].question}
+            </p>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+                marginTop: '1rem',
+              }}
+            >
+              {questions[current].options.map((option, idx) => {
+                const isSelected = selectedAnswers[current] === idx;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => handleOptionClick(idx)}
+                    style={{
+                      cursor: 'pointer',
+                      padding: '12px 16px',
+                      borderRadius: '6px',
+                      border: isSelected ? '2px solid #0d6efd' : '1px solid #ccc',
+                      backgroundColor: isSelected ? '#e7f1ff' : '#f8f9fa',
+                      transition: '0.2s ease-in-out',
+                    }}
+                  >
+                    {option}
+                  </div>
+                );
+              })}
+            </div>
+
+            <div
+              style={{
+                marginTop: '1.5rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <button
+                onClick={handleExit}
+                style={{
+                  padding: '0.4rem 0.8rem',
+                  backgroundColor: '#e0e0e0',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+              >
+                Exit this Test
+              </button>
+
+              <button
+                onClick={handleNext}
+                disabled={selectedAnswers[current] === null}
+                style={{
+                  padding: '0.5rem 1rem',
+                  backgroundColor:
+                    selectedAnswers[current] === null ? '#aaa' : '#007bff',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: selectedAnswers[current] === null ? 'not-allowed' : 'pointer',
+                }}
+              >
+                {current === questions.length - 1 ? 'Submit' : 'Next'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
